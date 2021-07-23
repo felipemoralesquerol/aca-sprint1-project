@@ -1,7 +1,7 @@
 const { arrayInfo } = require("./info");
 
 // Funciones de middlewares
-function existeAuto(req, res, next) {
+function existeAutomotor(req, res, next) {
     let id = req.params.id;
     let index = arrayInfo.findIndex(auto => auto.id == id);
     let auto = arrayInfo[index];
@@ -14,3 +14,5 @@ function existeAuto(req, res, next) {
         next();
     }
 }
+
+module.exports = { existeAutomotor }

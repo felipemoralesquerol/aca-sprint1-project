@@ -19,7 +19,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 // Importacion de archivos particulares
 
 const { arrayInfo } = require('./info');
-
+const { existeAutomotor } = require('./middleware');
 
 // Inicializacion del server
 const app = express();
@@ -116,7 +116,7 @@ app.get('/automotores/:id', existeAutomotor, function (req, res) {
  */
 
 
-app.delete('/automotores/:id', existeAuto, function (req, res) {
+app.delete('/automotores/:id', existeAutomotor, function (req, res) {
     let auto = req.auto
     let index = req.index
     resultado = 'Borrado según el indice: ' + index
@@ -124,7 +124,7 @@ app.delete('/automotores/:id', existeAuto, function (req, res) {
     res.send({ resultado: resultado, valor: auto });
 });
 
-app.put('/automotores/:id', existeAuto, function (req, res) {
+app.put('/automotores/:id', existeAutomotor, function (req, res) {
     let autoNuevo = req.body;
     let index = req.index
     resultado = 'Actualización según el indice: ' + index
