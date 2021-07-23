@@ -160,6 +160,53 @@ app.delete('/automotores/:id', existeAutomotor, function (req, res) {
     res.send({ resultado: resultado, valor: auto });
 });
 
+
+
+/**
+ * @swagger
+ * /automotores/{id}:
+ *  put:
+ *    summary: Modificación de automotor segun ID.
+ *    description : Modificación de automotor segun ID.
+ *    consumes:
+ *      - application/json
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        description: name that need to be updated
+ *        required: true
+ *        type: integer
+ *      - in: body
+ *        name: automotores
+ *        description: Automotor a modificar
+ *        schema:
+ *          type: object
+ *          required:
+ *            - id
+ *          properties:
+ *            id:
+ *              description: ID de automotor a modificar
+ *              type: integer
+ *            marca:
+ *              description: Marca del automotor
+ *              type: string
+ *            modelo:
+ *              description: Modelo del automotor
+ *              type: string
+ *            fechaFabricacion:
+ *              description: Fecha de fabricacion del automotor
+ *              type: string
+ *            cantidadPuertas:
+ *              description: Cantidad de puertas del automotor
+ *              type: integer
+ *            disponibleVenta:
+ *              description: Disponiniblidad de venta
+ *              type: boolean
+ *    responses:
+ *      201:
+ *       description: Agregado de automotor
+ *      
+ */
 app.put('/automotores/:id', existeAutomotor, function (req, res) {
     let autoNuevo = req.body;
     let index = req.index
