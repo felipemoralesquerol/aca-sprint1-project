@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan')
+const config = require('../config')
 //Swagger
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
@@ -219,7 +220,6 @@ app.put('/automotores/:id', existeAutomotor, function (req, res) {
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 // view in localhost:5000/api-docs
 
-
-app.listen(5000, function () {
-    console.log('Escuchando el puerto 5000!');
+app.listen(config.port, function () {
+    console.log(`Escuchando el puerto ${config.port}!`);
 });
