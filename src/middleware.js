@@ -1,19 +1,21 @@
-const { arrayInfo } = require("./info");
+const { usuarios } = require("./info");
 
 // Funciones de middlewares
-function existeAutomotor(req, res, next) {
+function existeUsuario(req, res, next) {
     id = req.params.id;
     console.log(id);
-    index = arrayInfo.findIndex(auto => auto.id == id);
-    auto = arrayInfo[index];
+    //TODO: Por el momento solo trabajamos con el indice del usuario
+    //index = usuarios.findIndex(elemento => elemento.id == id);
+    index = id;
+    usuario = usuarios[index];
     console.log(index);
-    if (!auto) {
-        res.status(404).send({ resultado: `Id auto ${id} no existe` });
+    if (!usuario) {
+        res.status(404).send({ resultado: `Usuario ${id} no existe` });
     } else {
         req.index = index;
-        req.auto = auto;
+        req.usuario = usuario;
         next();
     }
 }
 
-module.exports = { existeAutomotor }
+module.exports = { existeUsuario }

@@ -8,8 +8,8 @@ const swaggerUI = require('swagger-ui-express');
 const swaggerOptions = {
     swaggerDefinition: {
         info: {
-            title: 'Venta de automotores',
-            version: '1.0.2'
+            title: 'Resto',
+            version: '1.0.0'
         }
     },
     apis: ['./src/app.js'],
@@ -19,8 +19,8 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 // Importacion de archivos particulares
 
-const { arrayInfo } = require('./info');
-const { existeAutomotor } = require('./middleware');
+const { usuarios } = require('./info');
+const { existeUsuario } = require('./middleware');
 
 // Inicializacion del server
 const app = express();
@@ -35,28 +35,28 @@ app.use(morgan('dev'));
  * /:
  *  get:
  *    summary: programa
- *    description : Listado de autores y sus libros
+ *    description : Resto
  *    responses:
  *     200: 
  *       description: programa
  */
 app.get('/', function (req, res) {
-    res.send({ programa: "Automotores v1.0.0" })
+    res.send({ programa: "Resto v1.0.0" })
 })
 
 /**
  * @swagger
- * /automotores:
+ * /usuarios:
  *  get:
- *    summary: automotores
- *    description: Listado de automotores
+ *    summary: usuarios
+ *    description: Listado de usuarios
  *    responses:
  *       200:
- *         description: Listado de autores
+ *         description: Listado de usuarios
  */
-app.get('/automotores', function (req, res) {
-    console.log(arrayInfo);
-    res.send(arrayInfo);
+app.get('/usuarios', function (req, res) {
+    console.log(usuarios);
+    res.send(usuarios);
 });
 
 /**
