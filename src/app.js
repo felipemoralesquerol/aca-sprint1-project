@@ -20,14 +20,14 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 // Importacion de archivos particulares
 
 const { usuarios } = require('./info');
-const { existeUsuario } = require('./middleware');
+const { existeUsuario, isLoginUsuario } = require('./middleware');
 
 // Inicializacion del server
 const app = express();
 
 app.use(express.json());
 app.use(morgan('dev'));
-
+app.use(express.json());
 
 
 /**
@@ -50,74 +50,118 @@ app.get('/', function (req, res) {
  *  get:
  *    summary: usuarios
  *    description: Listado de usuarios
+ *    parameters:
+ *       - in: query
+ *         name: index
+ *         required: true
+ *         description: Index del usuario logueado.
+ *         schema:
+ *           type: integer
+ *           example: -1
  *    responses:
  *       200:
  *         description: Listado de usuarios
  */
-app.get('/usuarios', function (req, res) {
+app.get('/usuarios', isLoginUsuario, function (req, res) {
     console.log(usuarios);
     res.send(usuarios);
 });
 
 /**
  * @swagger
- * /automotores:
+ * /login:
  *  post:
- *    summary: automotores.
- *    description : Listado de automotores.
+ *    summary: Login de usuarios.
+ *    description : Login de usuarios.
  *    consumes:
  *      - application/json
  *    parameters:
  *      - in: body
- *        name: automotores
- *        description: Automotor a crear
+ *        name: datos
+ *        description: Email y contraseña de usuario a loguearse
+ *        schema:
+ *          type: object
+ *          required:
+ *            - email
+ *          properties:
+ *            email:
+ *              description: Email de usuario a loguearse.
+ *              type: email
+ *              example: admin@localhost
+ *            password:
+ *              description: Contraseña de usuario a loguearse 
+ *              type: string
+ *              example: 
+ *    responses:
+ *      200:
+ *       description: Login de usuario satisfactorio. 
+ *      404:
+ *       description: Usuario no encontrado (email y/o contraseña incorrecta)
+ */
+app.post('/login', existeUsuario, function (req, res) {
+    console.log('Login OK: ', req.usuarioIndex);
+    res.json({index: req.usuarioIndex});
+})
+
+/**
+ * @swagger
+ * /usuarios:
+ *  post:
+ *    summary: usuarios.
+ *    description : Listado de usuarios.
+ *    consumes:
+ *      - application/json
+ *    parameters:
+ *      - in: body
+ *        name: usuarios
+ *        description: usuario  a crear
  *        schema:
  *          type: object
  *          required:
  *            - id
  *          properties:
  *            id:
- *              description: ID de automotor a agregar
+ *              description: ID de usuario  a agregar
  *              type: integer
  *            marca:
- *              description: Marca del automotor
+ *              description: Marca del usuario 
  *              type: string
  *            modelo:
- *              description: Modelo del automotor
+ *              description: Modelo del usuario 
  *              type: string
  *            fechaFabricacion:
- *              description: Fecha de fabricacion del automotor
+ *              description: Fecha de fabricacion del usuario 
  *              type: string
  *            cantidadPuertas:
- *              description: Cantidad de puertas del automotor
+ *              description: Cantidad de puertas del usuario 
  *              type: integer
  *            disponibleVenta:
  *              description: Disponiniblidad de venta
  *              type: boolean
  *    responses:
  *      201:
- *       description: Agregado de automotor
+ *       description: Agregado de usuario 
  *      
  */
-app.post('/automotores', function (req, res) {
-    let auto = req.body;
+app.post('/usuarios', function (req, res) {
+    let usuario = req.body;
     console.log(req.body);
-    arrayInfo.push(auto);
-    res.send(auto);
+    usuarios.push(usuario);
+    res.send(usuario);
 });
 
 
 /**
  * @swagger
- * /automotores/{id}:
+ * /usuarios/{id}:
  *  get:
- *    summary: Recupera la información de un automotor según su ID
- *    description: Información de un automotores.
+ *    summary: Recupera la información de un usuario  según su ID
+ *    description: Información de un usuarios.
  *    parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID del auto a recuperar.
+ *         description: ID del usuario a recuperar.
  *         schema:
  *           type: integer
  *           example: 1
@@ -125,50 +169,50 @@ app.post('/automotores', function (req, res) {
  *       200:
  *        description: Listado ok.
  *       404:
- *        description: Automotor no encontrado.  
+ *        description: usuario  no encontrado.  
 */
-app.get('/automotores/:id', existeAutomotor, function (req, res) {
-    let auto = req.auto;
-    console.log(auto);
-    res.send(auto);
+app.get('/usuarios/:id', isLoginUsuario, function (req, res) {
+    let usuario= req.usuario;
+    console.log(usuario);
+    res.send(usuario);
 });
 
 /**
  * @swagger
- * /automotores/{id}:
+ * /usuarios/{id}:
  *  delete:
- *    summary: Eliminar un automotor según su ID
- *    description: Elimina el automotor.
+ *    summary: Eliminar un usuario  según su ID
+ *    description: Elimina el usuario .
  *    parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID del auto a eliminar.
+ *         description: ID del usuario a eliminar.
  *         schema:
  *           type: integer
  *           example: 1
  *    responses:
  *       200:
- *        description: Automotor eliminado correctamente.
+ *        description: usuario  eliminado correctamente.
  *       404:
- *        description: Automotor no encontrado.  
+ *        description: usuario  no encontrado.  
  */
-app.delete('/automotores/:id', existeAutomotor, function (req, res) {
-    let auto = req.auto
+app.delete('/usuarios/:id', existeUsuario, function (req, res) {
+    let usuario = req.usuario
     let index = req.index
     resultado = 'Borrado según el indice: ' + index
-    arrayInfo.splice(index, 1);
-    res.send({ resultado: resultado, valor: auto });
+    usuarios.splice(index, 1);
+    res.send({ resultado: resultado, valor: usuario });
 });
 
 
 
 /**
  * @swagger
- * /automotores/{id}:
+ * /usuarios/{id}:
  *  put:
- *    summary: Modificación de automotor segun ID.
- *    description : Modificación de automotor segun ID.
+ *    summary: Modificación de usuario  segun ID.
+ *    description : Modificación de usuario  segun ID.
  *    consumes:
  *      - application/json
  *    parameters:
@@ -178,37 +222,37 @@ app.delete('/automotores/:id', existeAutomotor, function (req, res) {
  *        required: true
  *        type: integer
  *      - in: body
- *        name: automotores
- *        description: Automotor a modificar
+ *        name: usuarios
+ *        description: usuario  a modificar
  *        schema:
  *          type: object
  *          required:
  *            - id
  *          properties:
  *            id:
- *              description: ID de automotor a modificar
+ *              description: ID de usuario  a modificar
  *              type: integer
  *            marca:
- *              description: Marca del automotor
+ *              description: Marca del usuario 
  *              type: string
  *            modelo:
- *              description: Modelo del automotor
+ *              description: Modelo del usuario 
  *              type: string
  *            fechaFabricacion:
- *              description: Fecha de fabricacion del automotor
+ *              description: Fecha de fabricacion del usuario 
  *              type: string
  *            cantidadPuertas:
- *              description: Cantidad de puertas del automotor
+ *              description: Cantidad de puertas del usuario 
  *              type: integer
  *            disponibleVenta:
  *              description: Disponiniblidad de venta
  *              type: boolean
  *    responses:
  *      201:
- *       description: Agregado de automotor
+ *       description: Agregado de usuario 
  *      
  */
-app.put('/automotores/:id', existeAutomotor, function (req, res) {
+app.put('/usuarios/:id', existeUsuario, function (req, res) {
     let autoNuevo = req.body;
     let index = req.index
     resultado = 'Actualización según el indice: ' + index
