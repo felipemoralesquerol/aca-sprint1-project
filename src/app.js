@@ -9,7 +9,7 @@ const swaggerOptions = {
     swaggerDefinition: {
         info: {
             title: 'Venta de automotores',
-            version: '1.0.1'
+            version: '1.0.2'
         }
     },
     apis: ['./src/app.js'],
