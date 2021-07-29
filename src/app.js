@@ -22,7 +22,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 //const { usuarios } = require('./infoUsuarios');
 let {usuarios, Usuario, productos, Producto, pedidos, Pedido} = require('../info/init');
 
-const { existeUsuario, isLoginUsuario, isLoginUsuarioAuth } = require('./middleware');
+const { existeUsuario, isLoginUsuario, isLoginUsuarioAuth, isAdmin, nuevoUsuario} = require('./middleware');
 
 // Inicializacion del server
 const app = express();
@@ -63,7 +63,7 @@ app.get('/', function (req, res) {
  *       200:
  *         description: Listado de usuarios
  */
-app.get('/usuarios', isLoginUsuario /*isLoginUsuarioAuth*/, function (req, res) {
+app.get('/usuarios', isLoginUsuario, isAdmin /*isLoginUsuarioAuth*/, function (req, res) {
     console.log(usuarios);
     res.send(usuarios);
 });
@@ -106,7 +106,7 @@ app.post('/login', existeUsuario, function (req, res) {
 
 /**
  * @swagger
- * /usuarios:
+ * /signup:
  *  post:
  *    summary: usuarios.
  *    description : Listado de usuarios.
@@ -114,37 +114,55 @@ app.post('/login', existeUsuario, function (req, res) {
  *      - application/json
  *    parameters:
  *      - in: body
- *        name: usuarios
+ *        name: usuario
  *        description: usuario  a crear
  *        schema:
  *          type: object
  *          required:
- *            - id
+ *            - username
+ *            - password
+ *            - nombre
+ *            - apellido
+ *            - email
+ *            - direccionEnvio
+ *            - telefono
  *          properties:
- *            id:
- *              description: ID de usuario  a agregar
- *              type: integer
- *            marca:
- *              description: Marca del usuario 
+ *            username:
+ *              description: Nombre del usuario
  *              type: string
- *            modelo:
- *              description: Modelo del usuario 
+ *              example: juangomez
+ *            password:
+ *              description: Contraseña
+ *              type: password
+ *              example: 1234
+ *            nombre:
+ *              description: Nombre del usuario 
  *              type: string
- *            fechaFabricacion:
- *              description: Fecha de fabricacion del usuario 
+ *              example: Juan
+ *            apellido:
+ *              description: Apellido del usuario 
  *              type: string
- *            cantidadPuertas:
- *              description: Cantidad de puertas del usuario 
- *              type: integer
- *            disponibleVenta:
- *              description: Disponiniblidad de venta
- *              type: boolean
+ *              example: Gomez
+ *            email:
+ *              description: Correo electrónico del usuario 
+ *              type: email
+ *              example: juangomez@gmail.com
+ *            direccionEnvio:
+ *              description: Dirección de envio
+ *              type: string
+ *              example: La Plata, Calle 7 # 1234
+ *            telefono:
+ *              description: Telefono del usuario
+ *              type: string
+ *              example: 221 1234567
  *    responses:
  *      201:
- *       description: Agregado de usuario 
+ *       description: Usuario registrado
+ *      401:
+ *       description: Usuario no registrado
  *      
  */
-app.post('/usuarios', function (req, res) {
+app.post('/signup', nuevoUsuario, function (req, res) {
     let usuario = req.body;
     console.log(req.body);
     usuarios.push(usuario);

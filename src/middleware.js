@@ -1,5 +1,8 @@
 const { usuarios } = require("../info/init");
 
+
+
+
 // Funciones de middlewares
 function isLoginUsuario(req, res, next) {
     id = parseInt(req.query.index);
@@ -19,7 +22,7 @@ function isLoginUsuario(req, res, next) {
 }
 
 
-
+//TODO: A futuro usar el req.header
 function isLoginUsuarioAuth(req, res, next) {
     token = req.headers['authorization'].substring(7,255);
     console.log(token);
@@ -40,6 +43,17 @@ function isLoginUsuarioAuth(req, res, next) {
 }
 
 
+function nuevoUsuario(req, res, next) {
+    username = req.body.username;
+    email = req.body.email;
+    index = usuarios.findIndex(elemento => elemento.email == email || elemento.username == username);
+    console.log(req.body,index);
+    if (index !== -1) {
+        res.status(404).send({ resultado: false, mensaje: `Usuario ya registrado con ese email y/o username` });
+    } else {
+        next();
+    }
+}
 
 function existeUsuario(req, res, next) {
     email = req.body.email;
@@ -58,7 +72,7 @@ function existeUsuario(req, res, next) {
 
 function isAdmin(req, res, next) {
     admin = req.usuario.admin;
-    if (index === -1) {
+    if (!admin) {
         res.status(404).send({ resultado: false, mensaje: `Acceso denegado` });
     } else {
         next();
@@ -67,4 +81,4 @@ function isAdmin(req, res, next) {
 
 
 
-module.exports = { isLoginUsuario, isLoginUsuarioAuth, existeUsuario, isAdmin }
+module.exports = { isLoginUsuario, isLoginUsuarioAuth, existeUsuario, isAdmin, nuevoUsuario }
