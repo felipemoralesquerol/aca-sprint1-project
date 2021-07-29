@@ -19,15 +19,14 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 // Importacion de archivos particulares
 
-const { usuarios } = require('./info');
-const { existeUsuario, isLoginUsuario } = require('./middleware');
+const { usuarios } = require('./infoUsuarios');
+const { existeUsuario, isLoginUsuario, isLoginUsuarioAuth } = require('./middleware');
 
 // Inicializacion del server
 const app = express();
 
 app.use(express.json());
 app.use(morgan('dev'));
-app.use(express.json());
 
 
 /**
@@ -62,7 +61,7 @@ app.get('/', function (req, res) {
  *       200:
  *         description: Listado de usuarios
  */
-app.get('/usuarios', isLoginUsuario, function (req, res) {
+app.get('/usuarios', isLoginUsuario /*isLoginUsuarioAuth*/, function (req, res) {
     console.log(usuarios);
     res.send(usuarios);
 });
