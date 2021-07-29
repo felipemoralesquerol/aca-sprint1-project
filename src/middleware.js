@@ -1,4 +1,4 @@
-const { usuarios } = require("./infoUsuarios");
+const { usuarios } = require("../info/init");
 
 // Funciones de middlewares
 function isLoginUsuario(req, res, next) {

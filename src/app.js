@@ -19,7 +19,9 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 // Importacion de archivos particulares
 
-const { usuarios } = require('./infoUsuarios');
+//const { usuarios } = require('./infoUsuarios');
+let {usuarios, Usuario, productos, Producto, pedidos, Pedido} = require('../info/init');
+
 const { existeUsuario, isLoginUsuario, isLoginUsuarioAuth } = require('./middleware');
 
 // Inicializacion del server
