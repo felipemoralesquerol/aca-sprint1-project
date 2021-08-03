@@ -20,9 +20,9 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 // Importacion de archivos particulares
 
 //const { usuarios } = require('./infoUsuarios');
-let {usuarios, Usuario, productos, Producto, pedidos, Pedido} = require('../info/init');
+let { usuarios, Usuario, productos, Producto, pedidos, Pedido } = require('../models/init');
 
-const { existeUsuario, isLoginUsuario, isLoginUsuarioAuth, isAdmin, nuevoUsuario} = require('./middleware');
+const { existeUsuario, isLoginUsuario, isLoginUsuarioAuth, isAdmin, nuevoUsuario } = require('./middleware');
 
 // Inicializacion del server
 const app = express();
@@ -42,38 +42,16 @@ app.use(morgan('dev'));
  *       description: programa
  */
 app.get('/', function (req, res) {
-    res.send({ programa: "Resto v1.0.0" })
+    res.send({ programa: "Resto v1.0.2" })
 })
 
-/**
- * @swagger
- * /usuarios:
- *  get:
- *    summary: usuarios
- *    description: Listado de usuarios
- *    parameters:
- *       - in: query
- *         name: index
- *         required: true
- *         description: Index del usuario logueado.
- *         schema:
- *           type: integer
- *           example: -1
- *    responses:
- *       200:
- *         description: Listado de usuarios
- */
-app.get('/usuarios', isLoginUsuario, isAdmin /*isLoginUsuarioAuth*/, function (req, res) {
-    console.log(usuarios);
-    res.send(usuarios);
-});
 
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *  post:
- *    summary: Login de usuarios.
- *    description : Login de usuarios.
+ *    summary: Login de usuario.
+ *    description : Login de usuario.
  *    consumes:
  *      - application/json
  *    parameters:
@@ -92,21 +70,24 @@ app.get('/usuarios', isLoginUsuario, isAdmin /*isLoginUsuarioAuth*/, function (r
  *            password:
  *              description: Contraseña de usuario a loguearse 
  *              type: string
- *              example: 
+ *              example: 1234
  *    responses:
  *      200:
  *       description: Login de usuario satisfactorio. 
  *      404:
  *       description: Usuario no encontrado (email y/o contraseña incorrecta)
  */
-app.post('/login', existeUsuario, function (req, res) {
+app.post('/auth/login', existeUsuario, function (req, res) {
     console.log('Login OK: ', req.usuarioIndex);
-    res.json({index: req.usuarioIndex});
+    res.json({ index: req.usuarioIndex });
 })
+
+
+
 
 /**
  * @swagger
- * /signup:
+ * /auth/signup:
  *  post:
  *    summary: usuarios.
  *    description : Listado de usuarios.
@@ -162,12 +143,68 @@ app.post('/login', existeUsuario, function (req, res) {
  *       description: Usuario no registrado
  *      
  */
-app.post('/signup', nuevoUsuario, function (req, res) {
-    let usuario = req.body;
+app.post('/auth/signup', nuevoUsuario, function (req, res) {
+    let { username, nombre, apellido, email, password, telefono, direccionEnvio } = req.body;
     console.log(req.body);
+    usuario = new Usuario(username, nombre, apellido, email, password, telefono, direccionEnvio);
+
     usuarios.push(usuario);
     res.send(usuario);
 });
+
+
+/**
+ * @swagger
+ * /auth/logout:
+ *  post:
+ *    summary: Logout de usuario.
+ *    description : Logout de usuario.
+ *    consumes:
+ *      - application/json
+ *    parameters:
+*       - in: query
+ *         name: index
+ *         required: true
+ *         description: Index del usuario logueado.
+ *         schema:
+ *           type: integer
+ *           example: -1
+ *    responses:
+ *      200:
+ *       description: Logout de usuario satisfactorio. 
+ *      404:
+ *       description: Usuario no encontrado (id incorrecta)
+ */
+app.post('/auth/logout', isLoginUsuario, function (req, res) {
+    console.log('Logout OK: ', req.usuarioIndex);
+    res.json({ index: -1 });
+})
+
+/**
+ * @swagger
+ * /usuarios:
+ *  get:
+ *    summary: usuarios
+ *    description: Listado de usuarios
+ *    tag: Usuario
+ *    parameters:
+ *       - in: query
+ *         name: index
+ *         required: true
+ *         description: Index del usuario logueado.
+ *         schema:
+ *           type: integer
+ *           example: -1
+ *    responses:
+ *       200:
+ *         description: Listado de usuarios
+ */
+app.get('/usuarios', isLoginUsuario, isAdmin /*isLoginUsuarioAuth*/, function (req, res) {
+    console.log(usuarios);
+    res.send(usuarios);
+});
+
+
 
 
 /**
@@ -177,8 +214,8 @@ app.post('/signup', nuevoUsuario, function (req, res) {
  *    summary: Recupera la información de un usuario  según su ID
  *    description: Información de un usuarios.
  *    parameters:
- *       - in: path
- *         name: id
+ *       - in: query
+ *         name: index
  *         required: true
  *         description: ID del usuario a recuperar.
  *         schema:
@@ -190,8 +227,8 @@ app.post('/signup', nuevoUsuario, function (req, res) {
  *       404:
  *        description: usuario  no encontrado.  
 */
-app.get('/usuarios/:id', isLoginUsuario, function (req, res) {
-    let usuario= req.usuario;
+app.get('/usuarios/:id', isLoginUsuario, isAdmin, function (req, res) {
+    let usuario = req.usuario;
     console.log(usuario);
     res.send(usuario);
 });
@@ -203,81 +240,221 @@ app.get('/usuarios/:id', isLoginUsuario, function (req, res) {
  *    summary: Eliminar un usuario  según su ID
  *    description: Elimina el usuario .
  *    parameters:
+ *       - in: query
+ *         name: index
+ *         required: true
+ *         description: ID de usuario logueado.
+ *         schema:
+ *           type: integer
+ *           example: -1
  *       - in: path
  *         name: id
  *         required: true
  *         description: ID del usuario a eliminar.
  *         schema:
  *           type: integer
- *           example: 1
+ *           example: -1
  *    responses:
  *       200:
  *        description: usuario  eliminado correctamente.
  *       404:
  *        description: usuario  no encontrado.  
  */
-app.delete('/usuarios/:id', existeUsuario, function (req, res) {
+app.delete('/usuarios/:id', isLoginUsuario, isAdmin, function (req, res) {
+    //TODO: Modularizar
     let usuario = req.usuario
-    let index = req.index
-    resultado = 'Borrado según el indice: ' + index
-    usuarios.splice(index, 1);
-    res.send({ resultado: resultado, valor: usuario });
+    let index = req.usuarioIndex
+    let indexABorrar = req.params.id;
+    // Recuperación de datos del usuario a borrar
+    usuarioABorrar = usuarios[indexABorrar];
+    console.log(indexABorrar, usuarioABorrar);
+    if (!usuarioABorrar) {
+        res.status(404).send({ resultado: `Usuario a borrar no encontrado` });
+    }
+    resultado = 'Borrado según el indice: ' + usuarioABorrar
+    usuarioABorrar.borrado = true
+    res.send({ resultado: resultado, valor: usuarioABorrar });
 });
+
+
+// TODO: Desarrollar a futuro
+// /**
+//  * @swagger
+//  * /usuarios/{id}:
+//  *  put:
+//  *    summary: Modificación de usuario  segun ID.
+//  *    description : Modificación de usuario  segun ID.
+//  *    consumes:
+//  *      - application/json
+//  *    parameters:
+//  *      - name: id
+//  *        in: path
+//  *        description: name that need to be updated
+//  *        required: true
+//  *        type: integer
+//  *      - in: body
+//  *        name: usuarios
+//  *        description: usuario  a modificar
+//  *        schema:
+//  *          type: object
+//  *          required:
+//  *            - id
+//  *          properties:
+//  *            id:
+//  *              description: ID de usuario  a modificar
+//  *              type: integer
+//  *            marca:
+//  *              description: Marca del usuario 
+//  *              type: string
+//  *            modelo:
+//  *              description: Modelo del usuario 
+//  *              type: string
+//  *            fechaFabricacion:
+//  *              description: Fecha de fabricacion del usuario 
+//  *              type: string
+//  *            cantidadPuertas:
+//  *              description: Cantidad de puertas del usuario 
+//  *              type: integer
+//  *            disponibleVenta:
+//  *              description: Disponiniblidad de venta
+//  *              type: boolean
+//  *    responses:
+//  *      201:
+//  *       description: Agregado de usuario 
+//  *      
+//  */
+// app.put('/usuarios/:id', existeUsuario, function (req, res) {
+//     let autoNuevo = req.body;
+//     let index = req.index
+//     resultado = 'Actualización según el indice: ' + index
+//     arrayInfo[index] = autoNuevo;
+//     res.send({ resultado: resultado, valor: autoNuevo });
+// });
+
+
+/*PRODUCTOS*****************************************************************************************/
+/**
+ * @swagger
+ * /productos:
+ *  get:
+ *    summary: productos
+ *    description: Listado de productos 
+ *    parameters:
+ *       - in: query
+ *         name: index
+ *         required: true
+ *         description: Index del usuario logueado.
+ *         schema:
+ *           type: integer
+ *           example: -1
+ *    responses:
+ *       200:
+ *         description: Listado de usuarios
+ */
+app.get('/productos', isLoginUsuario, function (req, res) {
+    console.log(productos);
+    res.send(productos);
+});
+
+
 
 
 
 /**
  * @swagger
- * /usuarios/{id}:
- *  put:
- *    summary: Modificación de usuario  segun ID.
- *    description : Modificación de usuario  segun ID.
+ * /productos:
+ *  post:
+ *    summary: productos.
+ *    description : Agregado de producto.
  *    consumes:
  *      - application/json
  *    parameters:
- *      - name: id
- *        in: path
- *        description: name that need to be updated
- *        required: true
- *        type: integer
  *      - in: body
- *        name: usuarios
- *        description: usuario  a modificar
+ *        name: producto
+ *        description: producto a crear
  *        schema:
  *          type: object
  *          required:
- *            - id
+ *            - index
+ *            - codigo
+ *            - nombre
+ *            - descripcion
+ *            - precioVenta
+ *            - stock
  *          properties:
- *            id:
- *              description: ID de usuario  a modificar
+ *            index:
+ *              description: ID de usuario
  *              type: integer
- *            marca:
- *              description: Marca del usuario 
+ *              example: -1
+ *            codigo:
+ *              description: Código del producto
  *              type: string
- *            modelo:
- *              description: Modelo del usuario 
+ *              example: XX
+ *            nombre:
+ *              description: Nombre del producto 
  *              type: string
- *            fechaFabricacion:
- *              description: Fecha de fabricacion del usuario 
+ *              example: Ensalada Verde
+ *            descripcion:
+ *              description: Descripcion del producto 
  *              type: string
- *            cantidadPuertas:
- *              description: Cantidad de puertas del usuario 
+ *              example: Ensalada verde en base a vegetales
+ *            precioVenta:
+ *              description: Precio de venta del producto 
+ *              type: float
+ *              example: 100
+ *            stock:
+ *              description: Stock
  *              type: integer
- *            disponibleVenta:
- *              description: Disponiniblidad de venta
- *              type: boolean
+ *              example: 1000
  *    responses:
  *      201:
- *       description: Agregado de usuario 
+ *       description: Producto creado
+ *      401:
+ *       description: Producto no creado
  *      
  */
-app.put('/usuarios/:id', existeUsuario, function (req, res) {
-    let autoNuevo = req.body;
-    let index = req.index
-    resultado = 'Actualización según el indice: ' + index
-    arrayInfo[index] = autoNuevo;
-    res.send({ resultado: resultado, valor: autoNuevo });
+app.post('/productos', isLoginUsuario, isAdmin, function (req, res) {
+    let producto = req.body;
+    console.log(producto);
+    productos.push(producto);
+    res.send(producto);
 });
+
+
+
+
+/*PEDIDOS**********************************************************************************************/
+/**
+ * @swagger
+ * /pedidos:
+ *  get:
+ *    summary: pedidos
+ *    description: Listado de pedidos 
+ *    parameters:
+ *       - in: query
+ *         name: index
+ *         required: true
+ *         description: Index del usuario logueado.
+ *         schema:
+ *           type: integer
+ *           example: -1
+ *    responses:
+ *       200:
+ *         description: Listado de usuarios
+ */
+app.get('/pedidos', isLoginUsuario, function (req, res) {
+    if (req.usuario.admin) {
+        console.log(pedidos);
+        res.send(pedidos);
+    } else {
+        pedidosUsuario = pedidos.find(p => p.usuario == req.usuario.username,);
+        console.log(pedidosUsuario);
+        res.send(pedidosUsuario);
+    }
+
+
+});
+
 
 
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));

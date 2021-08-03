@@ -11,6 +11,7 @@ class Usuario {
         this.direccionEnvio = direccionEnvio;
         //Si no viene el parametro admin se asume falso (no administrador)
         this.admin = admin === undefined ? false : admin;
+        this.borrado = false;
     }
 
 }
