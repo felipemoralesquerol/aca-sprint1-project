@@ -235,6 +235,36 @@ app.get('/usuarios/:id', isLoginUsuario, isAdmin, function (req, res) {
 
 /**
  * @swagger
+ * /usuarios/{id}/pedidos:
+ *  get:
+ *    summary: Recupera la información pedidos según su ID
+ *    description: Información de un usuarios.
+ *    parameters:
+ *       - in: query
+ *         name: index
+ *         required: true
+ *         description: ID del usuario a recuperar sus pedidos.
+ *         schema:
+ *           type: integer
+ *           example: -1
+ *    responses:
+ *       200:
+ *        description: Listado de pedidos ok.
+ *       404:
+ *        description: Usuario  no encontrado.  
+*/
+app.get('/usuarios/:id/pedidos', isLoginUsuario, function (req, res) {
+    //TODO: Refactoring con /pedidos
+    pedidosUsuario = pedidos.filter(p => req.usuario.admin || (p.usuario == req.usuario.username));
+    console.log(pedidosUsuario);
+    res.send(pedidosUsuario);
+});
+
+
+
+
+/**
+ * @swagger
  * /usuarios/{id}:
  *  delete:
  *    summary: Eliminar un usuario  según su ID
@@ -369,23 +399,25 @@ app.get('/productos', isLoginUsuario, function (req, res) {
  *    consumes:
  *      - application/json
  *    parameters:
+ *      - in: query
+ *        name: index
+ *        required: true
+ *        description: Index del usuario logueado.
+ *        schema:
+ *          type: integer
+ *          example: -1 
  *      - in: body
  *        name: producto
  *        description: producto a crear
  *        schema:
  *          type: object
  *          required:
- *            - index
  *            - codigo
  *            - nombre
  *            - descripcion
  *            - precioVenta
  *            - stock
  *          properties:
- *            index:
- *              description: ID de usuario
- *              type: integer
- *              example: -1
  *            codigo:
  *              description: Código del producto
  *              type: string
@@ -443,17 +475,102 @@ app.post('/productos', isLoginUsuario, isAdmin, function (req, res) {
  *         description: Listado de usuarios
  */
 app.get('/pedidos', isLoginUsuario, function (req, res) {
-    if (req.usuario.admin) {
-        console.log(pedidos);
-        res.send(pedidos);
-    } else {
-        pedidosUsuario = pedidos.find(p => p.usuario == req.usuario.username,);
-        console.log(pedidosUsuario);
-        res.send(pedidosUsuario);
-    }
-
-
+    pedidosUsuario = pedidos.filter(p => req.usuario.admin || (p.usuario == req.usuario.username));
+    console.log(pedidosUsuario);
+    res.send(pedidosUsuario);
 });
+
+/**
+ * @swagger
+ * /pedidos/{id}:
+ *  get:
+ *    summary: pedidos según id pedido
+ *    description: Listado de pedidos 
+ *    parameters:
+ *       - in: query
+ *         name: index
+ *         required: true
+ *         description: Index del usuario logueado.
+ *         schema:
+ *           type: integer
+ *           example: -1
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del pedido a mostrar
+ *         schema:
+ *           type: integer
+ *           example: -1
+ *    responses:
+ *       200:
+ *         description: Listado de usuarios
+ */
+app.get('/pedidos/:id', isLoginUsuario, function (req, res) {
+    idPedido = req.params.id;
+    console.log(req.params, req.query.index);
+    pedidosUsuario = pedidos.find(p => (p.id == idPedido && (req.usuario.admin || (p.usuario == req.usuario.username))));
+    console.log(idPedido, pedidosUsuario);
+    res.send(pedidosUsuario);
+});
+
+
+/**
+ * @swagger
+ * /pedidos/{id}/producto/{codeProducto}:
+ *  post:
+ *    summary: pedidos según id pedido
+ *    description: Listado de pedidos 
+ *    consumes:
+ *      - application/json
+ *    parameters:   
+ *      - in: query
+ *        name: index
+ *        required: true
+ *        description: Index del usuario logueado.
+ *        schema:
+ *          type: integer
+ *          example: -1
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: ID del pedido a mostrar
+ *        schema:
+ *          type: integer
+ *          example: -1
+ *      - in: body
+ *        name: producto
+ *        description: Código del producto a agregar al pedido
+ *        schema:
+ *          type: object
+ *          required:
+ *            - codeProducto
+ *          properties:
+ *            codeProducto:
+ *              description: Código del producto
+ *              type: string
+ *              example: XX
+ *    responses:
+ *      200:
+ *        description: Ok de producto agregado
+ */
+ app.post('/pedidos/:id/producto/:codeProducto', isLoginUsuario, function (req, res) {
+    idPedido = req.params.id;
+    console.log(req.params, req.query.index, req.body);
+    pedidosUsuario = pedidos.find(p => (p.id == idPedido && (req.usuario.admin || (p.usuario == req.usuario.username))));
+    if (!pedidosUsuario){
+        res.status(404).send({ resultado: `Id Pedido no encontrado`})
+    }
+    codeProducto = req.body.codeProducto;
+    producto = productos.find(p => p.codigo == codeProducto)
+    if (!producto) {
+        res.status(404).send({ resultado: `Código de producto no encontrado`})
+    }
+    console.log(codeProducto, producto);
+    pedidosUsuario.addProducto(producto);
+    console.log(pedidosUsuario);
+    res.send('Producto agregado correctamente. El pedido sale: ' + pedidosUsuario.montoTotal);
+});
+
 
 
 

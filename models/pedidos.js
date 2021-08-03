@@ -2,12 +2,12 @@
 let usuarios = require('./usuarios');
 let productos = require('./productos');
 // todo: pasaje a class
-let pedidosNumerador = 0;
+let pedidosId = 0;
 let pedidos = [];
 
 addPedido = (pedido) => {
-    pedidosNumerador += 1;
-    pedido.setNumero(pedidosNumerador);
+    pedidosId += 1;
+    pedido.setNumero(pedidosId);
     pedidos.push(pedido);
 }
 
@@ -29,12 +29,12 @@ class Pedido {
         this.productos = [];
     }
 
-    setNumero(numero) {
-        this.numero = numero;   
+    setNumero(id) {
+        this.id = id;   
     };
 
     addProducto(producto){
-        this.montoTotal += producto.precioVenta;
+        this.montoTotal += parseFloat(producto.precioVenta);
         this.productos.push(producto);
     }
 
