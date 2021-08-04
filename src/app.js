@@ -453,6 +453,129 @@ app.post('/productos', isLoginUsuario, isAdmin, function (req, res) {
 });
 
 
+/**
+ * @swagger
+ * /productos/{codeProducto}:
+ *  put:
+ *    summary: productos.
+ *    description : Actualización de datos de producto.
+ *    consumes:
+ *      - application/json
+ *    parameters:
+ *      - in: query
+ *        name: index
+ *        required: true
+ *        description: Index del usuario logueado.
+ *        schema:
+ *          type: integer
+ *          example: -1 
+ *      - in: path
+ *        name: codeProducto
+ *        required: true
+ *        description: Código de producto a actualizar.
+ *        schema:
+ *          type: string
+ *          example: XX
+ *      - in: body
+ *        name: producto
+ *        description: producto a crear
+ *        schema:
+ *          type: object
+ *          required:
+ *            - codigo
+ *            - nombre
+ *            - descripcion
+ *            - precioVenta
+ *            - stock
+ *          properties:
+ *            codigo:
+ *              description: Código del producto
+ *              type: string
+ *              example: XX
+ *            nombre:
+ *              description: Nombre del producto 
+ *              type: string
+ *              example: Ensalada Verde
+ *            descripcion:
+ *              description: Descripcion del producto 
+ *              type: string
+ *              example: Ensalada verde en base a vegetales
+ *            precioVenta:
+ *              description: Precio de venta del producto 
+ *              type: float
+ *              example: 100
+ *            stock:
+ *              description: Stock
+ *              type: integer
+ *              example: 1000
+ *            borrado:
+ *              description: Borrado
+ *              type: boolean
+ *              example: false 
+ *    responses:
+ *      201:
+ *       description: Producto actualizado
+ *      401:
+ *       description: Producto no actualizado
+ *      
+ */
+ app.put('/productos/:codeProducto', isLoginUsuario, isAdmin, function (req, res) {
+    let productoActualizado = req.body;
+    console.log(productoActualizado);
+    let index = productos.findIndex(elemento => elemento.codigo==productoActualizado.codigo && elemento.codigo == req.params.codeProducto);
+    if (index === -1) {
+        return res.status(404).send({resultado: 'Producto no encontrado o código incorrecto'})
+    }
+    productos[index]=productoActualizado;
+    res.send({resultado: 'Producto actualizado: ' + productoActualizado.codigo});
+});
+
+
+
+
+
+/**
+ * @swagger
+ * /productos/{codeProducto}:
+ *  delete:
+ *    summary: Eliminar un producto.
+ *    description: Elimina un producto según un codigo de producto.
+ *    parameters:
+ *       - in: query
+ *         name: index
+ *         required: true
+ *         description: ID de usuario logueado.
+ *         schema:
+ *           type: integer
+ *           example: -1
+ *       - in: path
+ *         name: codeProducto
+ *         required: true
+ *         description: Código de producto a borrar.
+ *         schema:
+ *           type: string
+ *           example: XX
+ *    responses:
+ *       200:
+ *        description: producto eliminado correctamente.
+ *       404:
+ *        description: producto no encontrado.  
+ */
+
+app.delete('/productos/:codeProducto', isLoginUsuario, isAdmin, function (req, res) {
+    //TODO: Modularizar
+    let codeABorrar = req.params.codeProducto;
+    // Recuperación de datos del producto a borrar
+    productoABorrar = productos.find(elemento => elemento.codigo == codeABorrar);
+    console.log(productoABorrar);
+    if (!productoABorrar) {
+       return res.status(404).json({ resultado: `Producto a borrar no encontrado` });
+    } 
+    resultado = 'Borrado según el indice: ' + productoABorrar
+    productoABorrar.borrado = true
+    return res.json({ resultado: resultado, valor: productoABorrar });
+  
+});
 
 
 /*PEDIDOS**********************************************************************************************/
@@ -553,22 +676,22 @@ app.get('/pedidos/:id', isLoginUsuario, function (req, res) {
  *      200:
  *        description: Ok de producto agregado
  */
- app.post('/pedidos/:id/producto/:codeProducto', isLoginUsuario, function (req, res) {
+app.post('/pedidos/:id/producto/:codeProducto', isLoginUsuario, function (req, res) {
     idPedido = req.params.id;
     console.log(req.params, req.query.index, req.body);
     pedidosUsuario = pedidos.find(p => (p.id == idPedido && (req.usuario.admin || (p.usuario == req.usuario.username))));
-    if (!pedidosUsuario){
-        res.status(404).send({ resultado: `Id Pedido no encontrado`})
+    if (!pedidosUsuario) {
+       return res.status(404).send({ resultado: `Id Pedido no encontrado` })
     }
     codeProducto = req.body.codeProducto;
-    producto = productos.find(p => p.codigo == codeProducto)
+    producto = productos.find(p => p.codigo == codeProducto && !p.borrado)
     if (!producto) {
-        res.status(404).send({ resultado: `Código de producto no encontrado`})
+       return res.status(404).send({ resultado: `Código de producto no encontrado o inhabilitado` })
     }
     console.log(codeProducto, producto);
     pedidosUsuario.addProducto(producto);
     console.log(pedidosUsuario);
-    res.send('Producto agregado correctamente. El pedido sale: ' + pedidosUsuario.montoTotal);
+    res.send({resultado: 'Producto agregado correctamente. El pedido sale: ' + pedidosUsuario.montoTotal});
 });
 
 

@@ -7,6 +7,7 @@ class Producto {
         this.descripcion = descripcion;
         this.precioVenta = precioVenta;
         this.stock = stock;
+        this.borrado = false;
     }
 
     getStock() {
