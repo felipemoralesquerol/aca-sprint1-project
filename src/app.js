@@ -7,12 +7,48 @@ const swaggerUI = require('swagger-ui-express');
 
 const swaggerOptions = {
     swaggerDefinition: {
+        openapi: '3.0.1',
         info: {
-            title: 'Resto',
-            version: '1.0.0'
+            title: 'API Resto',
+            version: '1.0.0',
+            description: 'Sprint Project N. 1'
         }
     },
     apis: ['./src/app.js'],
+    tags: [
+        {
+            name: 'general',
+            description: 'Operaciones generales'
+        },
+        {
+            name: 'usuarios',
+            description: 'Operaciones sobre usuarios'
+        },
+        {
+            name: 'pedidos',
+            description: 'Operaciones sobre pedidos'
+        },
+        {
+            name: 'productos',
+            description: 'Operaciones sobre productos'
+        },
+        {
+            name: 'formas de pago',
+            description: 'Operaciones sobre formas de pago'
+        },
+    ],
+    paths: {},
+    servers: [
+        {
+            "url": "http://localhost:5000/",
+            "description": "Local server"
+        },
+        {
+            "url": "http://localhost:5000/",
+            "description": "Local server"
+        },
+
+    ]
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -35,6 +71,7 @@ app.use(morgan('dev'));
  * @swagger
  * /:
  *  get:
+ *    tags: [generales]
  *    summary: programa
  *    description : Resto
  *    responses:
@@ -50,6 +87,7 @@ app.get('/', function (req, res) {
  * @swagger
  * /auth/login:
  *  post:
+ *    tags: [usuarios]
  *    summary: Login de usuario.
  *    description : Login de usuario.
  *    consumes:
@@ -89,6 +127,7 @@ app.post('/auth/login', existeUsuario, function (req, res) {
  * @swagger
  * /auth/signup:
  *  post:
+ *    tags: [usuarios]
  *    summary: usuarios.
  *    description : Listado de usuarios.
  *    consumes:
@@ -157,6 +196,7 @@ app.post('/auth/signup', nuevoUsuario, function (req, res) {
  * @swagger
  * /auth/logout:
  *  post:
+ *    tags: [usuarios]
  *    summary: Logout de usuario.
  *    description : Logout de usuario.
  *    consumes:
@@ -184,6 +224,7 @@ app.post('/auth/logout', isLoginUsuario, function (req, res) {
  * @swagger
  * /usuarios:
  *  get:
+ *    tags: [usuarios]
  *    summary: usuarios
  *    description: Listado de usuarios
  *    tag: Usuario
@@ -211,6 +252,7 @@ app.get('/usuarios', isLoginUsuario, isAdmin /*isLoginUsuarioAuth*/, function (r
  * @swagger
  * /usuarios/{id}:
  *  get:
+ *    tags: [usuarios]
  *    summary: Recupera la información de un usuario  según su ID
  *    description: Información de un usuarios.
  *    parameters:
@@ -237,6 +279,7 @@ app.get('/usuarios/:id', isLoginUsuario, isAdmin, function (req, res) {
  * @swagger
  * /usuarios/{id}/pedidos:
  *  get:
+ *    tags: [usuarios]
  *    summary: Recupera la información pedidos según su ID
  *    description: Información de un usuarios.
  *    parameters:
@@ -267,6 +310,7 @@ app.get('/usuarios/:id/pedidos', isLoginUsuario, function (req, res) {
  * @swagger
  * /usuarios/{id}:
  *  delete:
+ *    tags: [usuarios]
  *    summary: Eliminar un usuario  según su ID
  *    description: Elimina el usuario .
  *    parameters:
@@ -367,6 +411,7 @@ app.delete('/usuarios/:id', isLoginUsuario, isAdmin, function (req, res) {
  * @swagger
  * /productos:
  *  get:
+ *    tags: [productos]
  *    summary: productos
  *    description: Listado de productos 
  *    parameters:
@@ -394,6 +439,7 @@ app.get('/productos', isLoginUsuario, function (req, res) {
  * @swagger
  * /productos:
  *  post:
+ *    tags: [productos]
  *    summary: productos.
  *    description : Agregado de producto.
  *    consumes:
@@ -457,6 +503,7 @@ app.post('/productos', isLoginUsuario, isAdmin, function (req, res) {
  * @swagger
  * /productos/{codeProducto}:
  *  put:
+ *    tags: [productos]
  *    summary: productos.
  *    description : Actualización de datos de producto.
  *    consumes:
@@ -538,6 +585,7 @@ app.put('/productos/:codeProducto', isLoginUsuario, isAdmin, function (req, res)
  * @swagger
  * /productos/{codeProducto}:
  *  delete:
+ *    tags: [productos]
  *    summary: Eliminar un producto.
  *    description: Elimina un producto según un codigo de producto.
  *    parameters:
@@ -583,6 +631,7 @@ app.delete('/productos/:codeProducto', isLoginUsuario, isAdmin, function (req, r
  * @swagger
  * /pedidos:
  *  get:
+ *    tags: [pedidos]
  *    summary: pedidos
  *    description: Listado de pedidos 
  *    parameters:
@@ -610,6 +659,7 @@ app.get('/pedidos', isLoginUsuario, function (req, res) {
  * @swagger
  * /pedidos:
  *  post:
+ *    tags: [pedidos]
  *    summary: Agregado de pedido.
  *    description : Agregado de pedido.
  *    consumes:
@@ -645,15 +695,15 @@ app.get('/pedidos', isLoginUsuario, function (req, res) {
  *       description: Pedido no creado
  *      
  */
- app.post('/pedidos', isLoginUsuario, function (req, res) {
-    let {direccionEnvio, formaDePago} = req.body;
+app.post('/pedidos', isLoginUsuario, function (req, res) {
+    let { direccionEnvio, formaDePago } = req.body;
     usuario = req.usuario;
     console.log(req.body);
     if (!formaDePago in ['EF', 'TC', 'TD', 'MP']) {
-       return res.status(404).send({resultado: `Forma de pago incorrecta: ${formaDePago}`});
+        return res.status(404).send({ resultado: `Forma de pago incorrecta: ${formaDePago}` });
     }
-    direccionEnvio=direccionEnvio || usuario.direccionEnvio;
-    pedido= new Pedido(usuario.username, formaDePago);
+    direccionEnvio = direccionEnvio || usuario.direccionEnvio;
+    pedido = new Pedido(usuario.username, formaDePago);
     pedido.setDireccionEnvio(direccionEnvio);
     //Agregado de pedido a la lista global de pedidos 
     addPedido(pedido);
@@ -668,6 +718,7 @@ app.get('/pedidos', isLoginUsuario, function (req, res) {
  * @swagger
  * /pedidos/{id}:
  *  put:
+ *    tags: [pedidos]
  *    summary: Modificación de pedido.
  *    description : Modificación de pedido.
  *    consumes:
@@ -710,24 +761,24 @@ app.get('/pedidos', isLoginUsuario, function (req, res) {
  *       description: Pedido no modificado
  *      
  */
- app.put('/pedidos/:id', isLoginUsuario, function (req, res) {
-    idPedido = req.params.id; 
-    let {direccionEnvio, formaDePago} = req.body;
+app.put('/pedidos/:id', isLoginUsuario, function (req, res) {
+    idPedido = req.params.id;
+    let { direccionEnvio, formaDePago } = req.body;
     usuario = req.usuario;
     console.log(req.body);
     if (!formaDePago in ['EF', 'TC', 'TD', 'MP']) {
-       return res.status(404).send({resultado: `Forma de pago incorrecta: ${formaDePago}`});
+        return res.status(404).send({ resultado: `Forma de pago incorrecta: ${formaDePago}` });
     }
-    
+
     pedido = pedidos.find(p => ((p.id == idPedido) && (p.usuario == req.usuario.username)));
     if (!pedido) {
-        return res.status(404).send({resultado: `ID de pedido no encontrado: ${idPedido}`});
+        return res.status(404).send({ resultado: `ID de pedido no encontrado: ${idPedido}` });
     }
     //Requerimiento adicional (s). Los usuarios solo pueden agregar productos si el pedido está PEN
     if (pedido.estado != 'PEN') {
         return res.status(404).send({ resultado: `Un usuario solo puede modificar un pedido en estado pendiente` })
     }
-    direccionEnvio=direccionEnvio || usuario.direccionEnvio;
+    direccionEnvio = direccionEnvio || usuario.direccionEnvio;
     pedido.setFormaDePago(formaDePago);
     pedido.setDireccionEnvio(direccionEnvio);
     console.log(pedidos)
@@ -740,6 +791,7 @@ app.get('/pedidos', isLoginUsuario, function (req, res) {
  * @swagger
  * /pedidos/{id}:
  *  get:
+ *    tags: [pedidos]
  *    summary: pedidos según id pedido
  *    description: Listado de pedidos 
  *    parameters:
@@ -774,6 +826,7 @@ app.get('/pedidos/:id', isLoginUsuario, function (req, res) {
  * @swagger
  * /pedidos/{id}/producto/{codeProducto}:
  *  post:
+ *    tags: [pedidos]
  *    summary: pedidos según id pedido
  *    description: Listado de pedidos 
  *    consumes:
@@ -836,6 +889,7 @@ app.post('/pedidos/:id/producto/:codeProducto', isLoginUsuario, function (req, r
  * @swagger
  * /pedidos/{id}/estado/{codeEstado}:
  *  patch:
+ *    tags: [pedidos]
  *    summary: Cambio de estado
  *    description: Cambio de estado de pedido vía id pedido 
  *    consumes:
