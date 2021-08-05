@@ -2,7 +2,13 @@
 let {usuarios, Usuario} = require('./usuarios');
 let {productos, Producto} = require('./productos');
 let {pedidos, pedidosEstado, Pedido} = require('./pedidos');
+let {formasDePago, FormasDePago} = require('./formaDePago');
 
+
+/*  *********************** FORMAS DE PAGO************************ */
+formasDePago=[new FormasDePago('EF', "Efectivo"), new FormasDePago('TC','Tarjeta de Crédito'), 
+              new FormasDePago('TC','Tarjeta de Débito'), new FormasDePago('MP','MercadoPago')]
+console.log('Información de Formas de Pago cargada correctamente.', formasDePago);
 
 /*  ************************* USUARIOS *************************** */
 let admin = new Usuario('admin', 'admin', null, 'admin@localhost', 'admin', null, null, true);
@@ -10,7 +16,7 @@ let user1 = new Usuario('felipemoralesquerol', 'Felipe', 'Morales', 'felipe.mora
 let user2 = new Usuario('juanperez', 'Juan', 'Perez', 'juanperez@gmail.com','juan1234')
 
 usuarios = [admin, user1, user2];
-console.log('Información cargada correctamente.', usuarios)
+console.log('Información de Usuarios cargada correctamente.', usuarios)
 
 
 /*  ************************* PRODUCTOS *************************** */
@@ -47,4 +53,4 @@ addPedido(pedido3);
 
 console.log('Información de pedidos cargada correctamente.', pedidos)
 
-module.exports = {usuarios, Usuario, productos, Producto, pedidos, pedidosEstado, Pedido}
+module.exports = {usuarios, Usuario, productos, Producto, pedidos, pedidosEstado, Pedido, formasDePago, FormasDePago}

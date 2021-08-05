@@ -5,9 +5,8 @@ const config = require('../config')
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 
-const swaggerOptions = {
+const swaggerOptions1 = {
     swaggerDefinition: {
-        openapi: '3.0.1',
         info: {
             title: 'API Resto',
             version: '1.0.0',
@@ -36,27 +35,27 @@ const swaggerOptions = {
             name: 'formas de pago',
             description: 'Operaciones sobre formas de pago'
         },
-    ],
-    paths: {},
-    servers: [
-        {
-            "url": "http://localhost:5000/",
-            "description": "Local server"
-        },
-        {
-            "url": "http://localhost:5000/",
-            "description": "Local server"
-        },
-
     ]
+
 };
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
+const swaggerOptions = {
+    swaggerDefinition: {
+        info: {
+            title: 'API Resto',
+            version: '1.0.0',
+            description: 'Sprint Project N. 1'
+        }
+    },
+    apis: ['./src/app.js']
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions1);
 
 // Importacion de archivos particulares
 
 //const { usuarios } = require('./infoUsuarios');
-let { usuarios, Usuario, productos, Producto, pedidos, Pedido, pedidosEstado } = require('../models/init');
+let { usuarios, Usuario, productos, Producto, pedidos, Pedido, pedidosEstado, formasDePago, FormasDePago } = require('../models/init');
 
 const { existeUsuario, isLoginUsuario, isLoginUsuarioAuth, isAdmin, nuevoUsuario } = require('./middleware');
 
@@ -944,7 +943,80 @@ app.patch('/pedidos/:id/estado/:codeEstado', isLoginUsuario, isAdmin, function (
     res.send({ resultado: 'Cambio de Estado. El pedido está en : ' + pedidosUsuario.getEstado() });
 });
 
+/*FORMAS DE PAGO  ****************************************************************************************/
+/**
+ * @swagger
+ * /formasDePago:
+ *  get:
+ *    tags: [formas de pago]
+ *    summary: Formas de Pago
+ *    description: Listado de formas de pago 
+ *    parameters:
+ *       - in: query
+ *         name: index
+ *         required: true
+ *         description: Index del usuario logueado.
+ *         schema:
+ *           type: integer
+ *           example: -1
+ *    responses:
+ *       200:
+ *         description: Listado de formas de pago
+ */
+app.get('/formasDePago', isLoginUsuario, function (req, res) {
+    console.log(formasDePago);
+    res.send(formasDePago);
+});
 
+
+/**
+ * @swagger
+ * /formasDePago:
+ *  post:
+ *    tags: [formas de pago]
+ *    summary: Formas de Pagos.
+ *    description : Agregado de formas de Pago.
+ *    consumes:
+ *      - application/json
+ *    parameters:
+ *      - in: query
+ *        name: index
+ *        required: true
+ *        description: Index del usuario logueado.
+ *        schema:
+ *          type: integer
+ *          example: -1 
+ *      - in: body
+ *        name: formaDePago
+ *        description: producto a crear
+ *        schema:
+ *          type: object
+ *          required:
+ *            - codigo
+ *            - nombre
+ *          properties:
+ *            codigo:
+ *              description: Código de la forma de pago
+ *              type: string
+ *              example: EF
+ *            nombre:
+ *              description: Nombre de la forma de pago 
+ *              type: string
+ *              example: Efectivo
+ *    responses:
+ *      201:
+ *       description: Forma de pago creada
+ *      401:
+ *       description: Forma de pago no creada
+ *      
+ */
+app.post('/formasDePago', isLoginUsuario, isAdmin, function (req, res) {
+    let formaDePago = req.body;
+    console.log(formaDePago);
+    formaDePagoNueva = new FormasDePago(formaDePago.codigo, formasDePago.nombre);
+    productos.push(formaDePagoNueva);
+    res.send(formaDePagoNueva);
+});
 
 
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
