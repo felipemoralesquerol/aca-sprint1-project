@@ -1,12 +1,12 @@
 // carga de información adicional
 let {usuarios, Usuario} = require('./usuarios');
 let {productos, Producto} = require('./productos');
-let {pedidos, Pedido} = require('./pedidos');
+let {pedidos, pedidosEstado, Pedido} = require('./pedidos');
 
 
 /*  ************************* USUARIOS *************************** */
 let admin = new Usuario('admin', 'admin', null, 'admin@localhost', 'admin', null, null, true);
-let user1 = new Usuario('felipemoralesquerol', 'Felipe', 'Morales', 'felipe.morales.querol@gmail.com','felipe1234')
+let user1 = new Usuario('felipemoralesquerol', 'Felipe', 'Morales', 'felipe.morales.querol@gmail.com','felipe1234','221123456','Calle 506 #1617')
 let user2 = new Usuario('juanperez', 'Juan', 'Perez', 'juanperez@gmail.com','juan1234')
 
 usuarios = [admin, user1, user2];
@@ -47,4 +47,4 @@ addPedido(pedido3);
 
 console.log('Información de pedidos cargada correctamente.', pedidos)
 
-module.exports = {usuarios, Usuario, productos, Producto, pedidos, Pedido}
+module.exports = {usuarios, Usuario, productos, Producto, pedidos, pedidosEstado, Pedido}

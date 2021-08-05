@@ -20,7 +20,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 // Importacion de archivos particulares
 
 //const { usuarios } = require('./infoUsuarios');
-let { usuarios, Usuario, productos, Producto, pedidos, Pedido } = require('../models/init');
+let { usuarios, Usuario, productos, Producto, pedidos, Pedido, pedidosEstado } = require('../models/init');
 
 const { existeUsuario, isLoginUsuario, isLoginUsuarioAuth, isAdmin, nuevoUsuario } = require('./middleware');
 
@@ -519,15 +519,15 @@ app.post('/productos', isLoginUsuario, isAdmin, function (req, res) {
  *       description: Producto no actualizado
  *      
  */
- app.put('/productos/:codeProducto', isLoginUsuario, isAdmin, function (req, res) {
+app.put('/productos/:codeProducto', isLoginUsuario, isAdmin, function (req, res) {
     let productoActualizado = req.body;
     console.log(productoActualizado);
-    let index = productos.findIndex(elemento => elemento.codigo==productoActualizado.codigo && elemento.codigo == req.params.codeProducto);
+    let index = productos.findIndex(elemento => elemento.codigo == productoActualizado.codigo && elemento.codigo == req.params.codeProducto);
     if (index === -1) {
-        return res.status(404).send({resultado: 'Producto no encontrado o código incorrecto'})
+        return res.status(404).send({ resultado: 'Producto no encontrado o código incorrecto' })
     }
-    productos[index]=productoActualizado;
-    res.send({resultado: 'Producto actualizado: ' + productoActualizado.codigo});
+    productos[index] = productoActualizado;
+    res.send({ resultado: 'Producto actualizado: ' + productoActualizado.codigo });
 });
 
 
@@ -569,12 +569,12 @@ app.delete('/productos/:codeProducto', isLoginUsuario, isAdmin, function (req, r
     productoABorrar = productos.find(elemento => elemento.codigo == codeABorrar);
     console.log(productoABorrar);
     if (!productoABorrar) {
-       return res.status(404).json({ resultado: `Producto a borrar no encontrado` });
-    } 
+        return res.status(404).json({ resultado: `Producto a borrar no encontrado` });
+    }
     resultado = 'Borrado según el indice: ' + productoABorrar
     productoABorrar.borrado = true
     return res.json({ resultado: resultado, valor: productoABorrar });
-  
+
 });
 
 
@@ -602,6 +602,139 @@ app.get('/pedidos', isLoginUsuario, function (req, res) {
     console.log(pedidosUsuario);
     res.send(pedidosUsuario);
 });
+
+
+
+
+/**
+ * @swagger
+ * /pedidos:
+ *  post:
+ *    summary: Agregado de pedido.
+ *    description : Agregado de pedido.
+ *    consumes:
+ *      - application/json
+ *    parameters:
+ *      - in: query
+ *        name: index
+ *        required: true
+ *        description: Index del usuario logueado.
+ *        schema:
+ *          type: integer
+ *          example: -1 
+ *      - in: body
+ *        name: pedido
+ *        description: producto a crear
+ *        schema:
+ *          type: object
+ *          required:
+ *            - formaDePago
+ *          properties:
+ *            direccionEnvio:
+ *              description: Dirección de envio
+ *              type: string
+ *              example: 
+ *            formaDePago:
+ *              description: Forma de Pago (EF, TC, TD, MP) 
+ *              type: string
+ *              example: EF
+ *    responses:
+ *      201:
+ *       description: Pedido creado
+ *      401:
+ *       description: Pedido no creado
+ *      
+ */
+ app.post('/pedidos', isLoginUsuario, function (req, res) {
+    let {direccionEnvio, formaDePago} = req.body;
+    usuario = req.usuario;
+    console.log(req.body);
+    if (!formaDePago in ['EF', 'TC', 'TD', 'MP']) {
+       return res.status(404).send({resultado: `Forma de pago incorrecta: ${formaDePago}`});
+    }
+    direccionEnvio=direccionEnvio || usuario.direccionEnvio;
+    pedido= new Pedido(usuario.username, formaDePago);
+    pedido.setDireccionEnvio(direccionEnvio);
+    //Agregado de pedido a la lista global de pedidos 
+    addPedido(pedido);
+    console.log(pedidos)
+    res.send(pedido);
+});
+
+
+
+
+/**
+ * @swagger
+ * /pedidos/{id}:
+ *  put:
+ *    summary: Modificación de pedido.
+ *    description : Modificación de pedido.
+ *    consumes:
+ *      - application/json
+ *    parameters:
+ *      - in: query
+ *        name: index
+ *        required: true
+ *        description: Index del usuario logueado.
+ *        schema:
+ *          type: integer
+ *          example: -1 
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: ID del pedido a modificar
+ *        schema:
+ *          type: integer
+ *          example: -1
+ *      - in: body
+ *        name: pedido
+ *        description: producto a crear
+ *        schema:
+ *          type: object
+ *          required:
+ *            - formaDePago
+ *          properties:
+ *            direccionEnvio:
+ *              description: Dirección de envio
+ *              type: string
+ *              example: 
+ *            formaDePago:
+ *              description: Forma de Pago (EF, TC, TD, MP) 
+ *              type: string
+ *              example: EF
+ *    responses:
+ *      201:
+ *       description: Pedido modificado
+ *      401:
+ *       description: Pedido no modificado
+ *      
+ */
+ app.put('/pedidos/:id', isLoginUsuario, function (req, res) {
+    idPedido = req.params.id; 
+    let {direccionEnvio, formaDePago} = req.body;
+    usuario = req.usuario;
+    console.log(req.body);
+    if (!formaDePago in ['EF', 'TC', 'TD', 'MP']) {
+       return res.status(404).send({resultado: `Forma de pago incorrecta: ${formaDePago}`});
+    }
+    
+    pedido = pedidos.find(p => ((p.id == idPedido) && (p.usuario == req.usuario.username)));
+    if (!pedido) {
+        return res.status(404).send({resultado: `ID de pedido no encontrado: ${idPedido}`});
+    }
+    //Requerimiento adicional (s). Los usuarios solo pueden agregar productos si el pedido está PEN
+    if (pedido.estado != 'PEN') {
+        return res.status(404).send({ resultado: `Un usuario solo puede modificar un pedido en estado pendiente` })
+    }
+    direccionEnvio=direccionEnvio || usuario.direccionEnvio;
+    pedido.setFormaDePago(formaDePago);
+    pedido.setDireccionEnvio(direccionEnvio);
+    console.log(pedidos)
+    res.send(pedido);
+});
+
+
 
 /**
  * @swagger
@@ -679,19 +812,82 @@ app.get('/pedidos/:id', isLoginUsuario, function (req, res) {
 app.post('/pedidos/:id/producto/:codeProducto', isLoginUsuario, function (req, res) {
     idPedido = req.params.id;
     console.log(req.params, req.query.index, req.body);
-    pedidosUsuario = pedidos.find(p => (p.id == idPedido && (req.usuario.admin || (p.usuario == req.usuario.username))));
-    if (!pedidosUsuario) {
-       return res.status(404).send({ resultado: `Id Pedido no encontrado` })
+    pedidoUsuario = pedidos.find(p => (p.id == idPedido && (req.usuario.admin || (p.usuario == req.usuario.username))));
+    if (!pedidoUsuario) {
+        return res.status(404).send({ resultado: `Id Pedido no encontrado` })
+    }
+    //Requerimiento adicional (s). Los usuarios solo pueden agregar productos si el pedido está PEN
+    if (!req.usuario.admin && pedidoUsuario.estado != 'PEN') {
+        return res.status(404).send({ resultado: `Un usuario solo puede agregar productos a pedidos en estado pendiente` })
     }
     codeProducto = req.body.codeProducto;
     producto = productos.find(p => p.codigo == codeProducto && !p.borrado)
     if (!producto) {
-       return res.status(404).send({ resultado: `Código de producto no encontrado o inhabilitado` })
+        return res.status(404).send({ resultado: `Código de producto no encontrado o inhabilitado` })
     }
     console.log(codeProducto, producto);
-    pedidosUsuario.addProducto(producto);
+    pedidoUsuario.addProducto(producto);
+    console.log(pedidoUsuario);
+    res.send({ resultado: 'Producto agregado correctamente. El pedido sale: ' + pedidoUsuario.montoTotal });
+});
+
+
+/**
+ * @swagger
+ * /pedidos/{id}/estado/{codeEstado}:
+ *  patch:
+ *    summary: Cambio de estado
+ *    description: Cambio de estado de pedido vía id pedido 
+ *    consumes:
+ *      - application/json
+ *    parameters:   
+ *      - in: query
+ *        name: index
+ *        required: true
+ *        description: Index del usuario logueado.
+ *        schema:
+ *          type: integer
+ *          example: -1
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: ID del pedido a mostrar
+ *        schema:
+ *          type: integer
+ *          example: -1
+ *      - in: body
+ *        name: codeEstado
+ *        description: Código del estado a cambiar
+ *        schema:
+ *          type: object
+ *          required:
+ *            - codeEstado
+ *          properties:
+ *            codeEstado:
+ *              description: Código de Estado (PEN, CON, ENP, ENV, ENT)
+ *              type: string
+ *              example: XX
+ *    responses:
+ *      200:
+ *        description: Ok de producto agregado
+ */
+app.patch('/pedidos/:id/estado/:codeEstado', isLoginUsuario, isAdmin, function (req, res) {
+    idPedido = req.params.id;
+    console.log(req.params, req.query.index, req.body);
+    pedidosUsuario = pedidos.find(p => (p.id == idPedido && (req.usuario.admin || (p.usuario == req.usuario.username))));
+    if (!pedidosUsuario) {
+        return res.status(404).send({ resultado: `Id Pedido no encontrado` })
+    }
+    //Chequeo de Estado
+    codeEstado = req.body.codeEstado;
+    Estado = pedidosEstado.find(pe => pe == codeEstado);
+    if (!Estado) {
+        return res.status(404).send({ resultado: `Código de Estado no encontrado` })
+    }
+    console.log(codeEstado, Estado);
+    pedidosUsuario.setEstado(Estado);
     console.log(pedidosUsuario);
-    res.send({resultado: 'Producto agregado correctamente. El pedido sale: ' + pedidosUsuario.montoTotal});
+    res.send({ resultado: 'Cambio de Estado. El pedido está en : ' + pedidosUsuario.getEstado() });
 });
 
 

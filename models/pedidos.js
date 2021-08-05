@@ -4,6 +4,8 @@ let productos = require('./productos');
 // todo: pasaje a class
 let pedidosId = 0;
 let pedidos = [];
+let pedidosEstado = ['PEN', 'CON', 'ENP', 'ENV', 'ENT'];
+
 
 addPedido = (pedido) => {
     pedidosId += 1;
@@ -24,22 +26,41 @@ class Pedido {
         this.formaDePago = formaDePago;
         this.fechaHora = new Date();
         // Pendiente => Confirmado => En preparación => Enviado => Entregado
-        this.estado = 'Pendiente';
+        // PEN => CON => ENP => ENV => ENT
+        this.estado = 'PEN';
         this.montoTotal = 0;
         this.productos = [];
     }
 
     setNumero(id) {
-        this.id = id;   
+        this.id = id;
     };
 
-    addProducto(producto){
+    addProducto(producto) {
         this.montoTotal += parseFloat(producto.precioVenta);
         this.productos.push(producto);
     }
 
+    setEstado(estado) {
+        this.estado = estado;
+    }
 
+    getEstado() {
+        return this.estado;
+    }
+    
+    setDireccionEnvio(direccionEnvio) {
+        this.direccionEnvio = direccionEnvio;
+    }
+
+    getFormaDePago(){
+       return this.formaDePago;
+    }
+
+    setFormaDePago(formaDePago) {
+        this.formaDePago = formaDePago;
+    }
 }
 
 
-module.exports = { pedidos, Pedido }
+module.exports = { pedidos, pedidosEstado, Pedido }
