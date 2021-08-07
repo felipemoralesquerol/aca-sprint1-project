@@ -5,7 +5,7 @@ const config = require('../config')
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 
-const swaggerOptions1 = {
+const swaggerOptions = {
     swaggerDefinition: {
         info: {
             title: 'API Resto',
@@ -13,11 +13,15 @@ const swaggerOptions1 = {
             description: 'Sprint Project N. 1'
         }
     },
-    apis: ['./src/app.js'],
+    apis: ['./src/app.js','./../routes/program.js'],
     tags: [
         {
             name: 'general',
             description: 'Operaciones generales'
+        },
+        {
+            name: 'auth',
+            description: 'Operaciones sobre autorización'
         },
         {
             name: 'usuarios',
@@ -39,18 +43,9 @@ const swaggerOptions1 = {
 
 };
 
-const swaggerOptions = {
-    swaggerDefinition: {
-        info: {
-            title: 'API Resto',
-            version: '1.0.0',
-            description: 'Sprint Project N. 1'
-        }
-    },
-    apis: ['./src/app.js']
-};
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions1);
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 // Importacion de archivos particulares
 
@@ -58,6 +53,8 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions1);
 let { usuarios, Usuario, productos, Producto, pedidos, Pedido, pedidosEstado, formasDePago, FormasDePago } = require('../models/init');
 
 const { existeUsuario, isLoginUsuario, isLoginUsuarioAuth, isAdmin, nuevoUsuario } = require('./middleware');
+
+let program = require('./../routes/program.js');
 
 // Inicializacion del server
 const app = express();
@@ -77,16 +74,18 @@ app.use(morgan('dev'));
  *     200: 
  *       description: programa
  */
-app.get('/', function (req, res) {
-    res.send({ programa: "Resto v1.0.2" })
-})
+// app.get('/', function (req, res) {
+//     res.send({ programa: "Resto v1.0.2" })
+// })
+
+app.use('/', program);
 
 
 /**
  * @swagger
  * /auth/login:
  *  post:
- *    tags: [usuarios]
+ *    tags: [auth]
  *    summary: Login de usuario.
  *    description : Login de usuario.
  *    consumes:
@@ -126,7 +125,7 @@ app.post('/auth/login', existeUsuario, function (req, res) {
  * @swagger
  * /auth/signup:
  *  post:
- *    tags: [usuarios]
+ *    tags: [auth]
  *    summary: usuarios.
  *    description : Listado de usuarios.
  *    consumes:
@@ -195,7 +194,7 @@ app.post('/auth/signup', nuevoUsuario, function (req, res) {
  * @swagger
  * /auth/logout:
  *  post:
- *    tags: [usuarios]
+ *    tags: [auth]
  *    summary: Logout de usuario.
  *    description : Logout de usuario.
  *    consumes:
@@ -1014,7 +1013,7 @@ app.post('/formasDePago', isLoginUsuario, isAdmin, function (req, res) {
     let formaDePago = req.body;
     console.log(formaDePago);
     formaDePagoNueva = new FormasDePago(formaDePago.codigo, formasDePago.nombre);
-    productos.push(formaDePagoNueva);
+    formasDePago.push(formaDePagoNueva);
     res.send(formaDePagoNueva);
 });
 
