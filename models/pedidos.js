@@ -4,6 +4,7 @@ let productos = require('./productos');
 // todo: pasaje a class
 let pedidosId = 0;
 let pedidos = [];
+// Estados: Denotan PENdiente, CONfirmado, EN Preparación, ENViado, ENTregado
 let pedidosEstado = ['PEN', 'CON', 'ENP', 'ENV', 'ENT'];
 
 
