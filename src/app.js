@@ -13,7 +13,7 @@ const swaggerOptions = {
             description: 'Sprint Project N. 1'
         }
     },
-    apis: ['./src/app.js','./../routes/program.js'],
+    apis: ["./src/app.js",'./../routes/program.js'],
     tags: [
         {
             name: 'general',
@@ -54,7 +54,7 @@ let { usuarios, Usuario, productos, Producto, pedidos, Pedido, pedidosEstado, fo
 
 const { existeUsuario, isLoginUsuario, isLoginUsuarioAuth, isAdmin, nuevoUsuario } = require('./middleware');
 
-let program = require('./../routes/program.js');
+const program = require('./../routes/program.js');
 
 // Inicializacion del server
 const app = express();
