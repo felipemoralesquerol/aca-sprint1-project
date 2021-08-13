@@ -1,4 +1,4 @@
-console.log('Ambiente: ' + process.env.NODE_ENV);
+console.log('Información de Ambiente: ' + process.env.NODE_ENV);
 
 // carga de información adicional
 let { usuarios, Usuario } = require('./usuarios');

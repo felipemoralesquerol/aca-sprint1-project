@@ -1,7 +1,6 @@
-module.exports =  
-    {
-        title: 'Sprint Project 1',
-        port: 5000
-    
-    }
- 
+module.exports =
+{
+    title: 'DWBE - Sprint Project 1 - Revisión Nueva 2',
+    port: 5000
+
+}

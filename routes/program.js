@@ -10,7 +10,7 @@ let router = express.Router();
  *    description : Resto
  *    responses:
  *     200: 
- *       description: programa
+ *       description: Descripción de la versión
  */
 router.get('/', function (req, res) {
     res.send({ programa: "Resto v1.0.2" })
