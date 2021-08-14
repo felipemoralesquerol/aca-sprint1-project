@@ -13,7 +13,7 @@ const swaggerOptions = {
             description: 'Sprint Project N. 1'
         }
     },
-    apis: ["./src/app.js",'./../routes/program.js'],
+    apis: ["./src/app.js", './../routes/program.js'],
     tags: [
         {
             name: 'general',
@@ -747,7 +747,7 @@ app.post('/pedidos', isLoginUsuario, function (req, res) {
  *            direccionEnvio:
  *              description: Dirección de envio
  *              type: string
- *              example: 
+ *              example: "Calle x"
  *            formaDePago:
  *              description: Forma de Pago (EF, TC, TD, MP) 
  *              type: string
@@ -816,7 +816,11 @@ app.get('/pedidos/:id', isLoginUsuario, function (req, res) {
     console.log(req.params, req.query.index);
     pedidosUsuario = pedidos.find(p => (p.id == idPedido && (req.usuario.admin || (p.usuario == req.usuario.username))));
     console.log(idPedido, pedidosUsuario);
-    res.send(pedidosUsuario);
+    if (!pedidosUsuario) {
+        res.status(404).json({ message: "Orden no encontrada" })
+    } else {
+        res.send(pedidosUsuario);
+    }
 });
 
 
