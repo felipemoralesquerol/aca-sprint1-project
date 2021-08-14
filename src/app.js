@@ -756,7 +756,7 @@ app.post('/pedidos', isLoginUsuario, function (req, res) {
  *      201:
  *       description: Pedido modificado
  *      401:
- *       description: Pedido no modificado
+ *       description: Pedido no modificado debido a error
  *      
  */
 app.put('/pedidos/:id', isLoginUsuario, function (req, res) {
