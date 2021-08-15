@@ -7,6 +7,7 @@ class Producto {
         this.descripcion = descripcion;
         this.precioVenta = precioVenta;
         this.stock = stock;
+        this.foto = undefined;
         this.borrado = false;
     }
 
@@ -16,6 +17,13 @@ class Producto {
 
     setStock(stock) {
         this.stock = stock;
+    }
+
+    setFoto(foto) {
+        this.foto = foto;
+    }
+    getFoto() {
+        return this.foto;
     }
 
     // registra la venta de 1 unidad
