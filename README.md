@@ -9,8 +9,7 @@ Sprint Project N. 1 en el marco del Curso de Desarrollo Web Bakend de Acámica.
 
 * git
 * Node.Js
-* express
-* swagger
+
 
 #### Módulos de Node.Js utilizados:
 
