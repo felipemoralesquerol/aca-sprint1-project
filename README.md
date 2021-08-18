@@ -3,7 +3,7 @@
 
 #### Descripción
 
-Sprint Project N. 1 en el marco del Curso de Desarrollo Web Bakend de Acámica 2021 (Jun/Oct).
+Sprint Project N. 1 en el marco del Curso de Desarrollo Web Backend de Acámica 2021 (Jun/Oct).
 
 #### Prerrequisitos tecnológicos:
 
