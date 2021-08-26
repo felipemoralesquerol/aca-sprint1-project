@@ -36,4 +36,4 @@ Sprint Project N. 1 en el marco del Curso de Desarrollo Web Backend de Acámica 
 
 ---
 *Nota del autor: 
-Esta implementación fue desarrollada a titulo personal y solamente a los efectos de contar con una alternativa de la posible implementación de lo requerido.*
+Esta implementación fue desarrollada a titulo personal y solamente a los efectos de contar con una alternativa de la posible implementación de lo requerido. Cualquier comentario será bienvenido!*
