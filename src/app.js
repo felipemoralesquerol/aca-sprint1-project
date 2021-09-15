@@ -1,6 +1,8 @@
 const express = require('express');
 const morgan = require('morgan')
-const config = require('../config')
+require('dotenv').config();
+const db = require('../config/db')
+
 //Swagger
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
@@ -1025,6 +1027,6 @@ app.post('/formasDePago', isLoginUsuario, isAdmin, function (req, res) {
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 // view in localhost:5000/api-docs
 
-app.listen(config.port, function () {
-    console.log(`Escuchando el puerto ${config.port}!`);
+app.listen(process.env.APP_PORT, function () {
+    console.log(`Escuchando el puerto ${process.env.APP_PORT}!`);
 });
