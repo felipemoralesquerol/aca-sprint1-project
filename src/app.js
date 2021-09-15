@@ -52,7 +52,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 // Importacion de archivos particulares
 
 //const { usuarios } = require('./infoUsuarios');
-let { usuarios, Usuario, productos, Producto, pedidos, Pedido, pedidosEstado, formasDePago, FormasDePago } = require('../models/init');
+let { usuarios, Usuario, productos, Producto, pedidos, Pedido, pedidosEstado, formasDePago, FormasDePago } = require('./models/init');
 
 const { existeUsuario, isLoginUsuario, isLoginUsuarioAuth, isAdmin, nuevoUsuario } = require('./middleware');
 

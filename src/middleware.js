@@ -1,4 +1,4 @@
-const { usuarios } = require("../models/init");
+const { usuarios } = require("./models/init");
 
 //TODO: Posible refactoring a varios archivos por entidadS
 
@@ -24,7 +24,7 @@ function isLoginUsuario(req, res, next) {
 
 //TODO: A futuro usar el req.header
 function isLoginUsuarioAuth(req, res, next) {
-    token = req.headers['authorization'].substring(7,255);
+    token = req.headers['authorization'].substring(7, 255);
     console.log(token);
     //Formato de auth es 'Bearer Token' (token de portador)
     token = token.substring(7)
@@ -47,7 +47,7 @@ function nuevoUsuario(req, res, next) {
     username = req.body.username;
     email = req.body.email;
     index = usuarios.findIndex(elemento => elemento.email == email || elemento.username == username);
-    console.log(req.body,index);
+    console.log(req.body, index);
     if (index !== -1) {
         res.status(404).send({ resultado: false, mensaje: `Usuario ya registrado con ese email y/o username` });
     } else {
@@ -62,7 +62,7 @@ function existeUsuario(req, res, next) {
     email = req.body.email;
     password = req.body.password;
     index = usuarios.findIndex(elemento => elemento.email == email && elemento.password == password);
-    console.log(req.body,index);
+    console.log(req.body, index);
     if (index === -1) {
         res.status(404).send(false);
     } else {
