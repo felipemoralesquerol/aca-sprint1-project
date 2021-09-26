@@ -56,7 +56,7 @@ let { usuarios, Usuario, productos, Producto, pedidos, Pedido, pedidosEstado, fo
 
 const { existeUsuario, isLoginUsuario, isLoginUsuarioAuth, isAdmin, nuevoUsuario } = require('./middleware');
 
-const program = require('./../routes/program.js');
+const program = require('./routes/program.js');
 
 // Inicializacion del server
 const app = express();
