@@ -9,13 +9,34 @@ const swaggerUI = require("swagger-ui-express");
 
 const swaggerOptions = {
   swaggerDefinition: {
+    //servers: ["http://localhost:5000/"],
+    openapi: "3.0.3", // present supported openapi version
     info: {
       title: "API Resto",
       version: "1.0.0",
       description: "Sprint Project N. 1",
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   },
-  apis: ["./src/routes/program.js", "./src/app.js"],
+  apis: [
+    "./src/routes/program.js",
+    "./src/routes/auth.js",
+    "./src/routes/usuario.js",
+    "./src/app.js",
+  ],
   tags: [
     {
       name: "general",
@@ -74,297 +95,20 @@ const program = require("./routes/program.js");
 // Inicializacion del server
 const app = express();
 
+const { Router } = require("express");
+const router = Router();
+
 app.use(express.json());
 app.use(morgan("dev"));
 
-/**
- * @1swagger
- * /programa:
- *   get:
- *     description: Referencia al programa general
- *     program: *default-integration
- */
 app.use("/", program);
 
-/**
- * @swagger
- * /auth/login:
- *  post:
- *    tags: [auth]
- *    summary: Login de usuario.
- *    description : Login de usuario.
- *    consumes:
- *      - application/json
- *    parameters:
- *      - in: body
- *        name: datos
- *        description: Email y contraseña de usuario a loguearse
- *        schema:
- *          type: object
- *          required:
- *            - email
- *          properties:
- *            email:
- *              description: Email de usuario a loguearse.
- *              type: email
- *              example: admin@localhost
- *            password:
- *              description: Contraseña de usuario a loguearse
- *              type: string
- *              example: 1234
- *    responses:
- *      200:
- *       description: Login de usuario satisfactorio.
- *      404:
- *       description: Usuario no encontrado (email y/o contraseña incorrecta)
- */
-app.post("/auth/login", existeUsuario, function (req, res) {
-  console.log("Login OK: ", req.usuarioIndex);
-  res.json({ index: req.usuarioIndex });
-});
+// Importación de rutas
+const auth = require("./routes/auth");
+const usuario = require("./routes/usuario");
 
-/**
- * @swagger
- * /auth/signup:
- *  post:
- *    tags: [auth]
- *    summary: usuarios.
- *    description : Listado de usuarios.
- *    consumes:
- *      - application/json
- *    parameters:
- *      - in: body
- *        name: usuario
- *        description: usuario  a crear
- *        schema:
- *          type: object
- *          required:
- *            - username
- *            - password
- *            - nombre
- *            - apellido
- *            - email
- *            - direccionEnvio
- *            - telefono
- *          properties:
- *            username:
- *              description: Nombre del usuario
- *              type: string
- *              example: juangomez
- *            password:
- *              description: Contraseña
- *              type: password
- *              example: 1234
- *            nombre:
- *              description: Nombre del usuario
- *              type: string
- *              example: Juan
- *            apellido:
- *              description: Apellido del usuario
- *              type: string
- *              example: Gomez
- *            email:
- *              description: Correo electrónico del usuario
- *              type: email
- *              example: juangomez@gmail.com
- *            direccionEnvio:
- *              description: Dirección de envio
- *              type: string
- *              example: La Plata, Calle 7 # 1234
- *            telefono:
- *              description: Telefono del usuario
- *              type: string
- *              example: 221 1234567
- *    responses:
- *      201:
- *       description: Usuario registrado
- *      401:
- *       description: Usuario no registrado
- *
- */
-app.post("/auth/signup", nuevoUsuario, function (req, res) {
-  let {
-    username,
-    nombre,
-    apellido,
-    email,
-    password,
-    telefono,
-    direccionEnvio,
-  } = req.body;
-  console.log(req.body);
-  usuario = new Usuario(
-    username,
-    nombre,
-    apellido,
-    email,
-    password,
-    telefono,
-    direccionEnvio
-  );
-
-  usuarios.push(usuario);
-  res.send(usuario);
-});
-
-/**
- * @swagger
- * /auth/logout:
- *  post:
- *    tags: [auth]
- *    summary: Logout de usuario.
- *    description : Logout de usuario.
- *    consumes:
- *      - application/json
- *    parameters:
- *       - in: query
- *         name: index
- *         required: true
- *         description: Index del usuario logueado.
- *         schema:
- *           type: integer
- *           example: -1
- *    responses:
- *      200:
- *       description: Logout de usuario satisfactorio.
- *      404:
- *       description: Usuario no encontrado (id incorrecta)
- */
-app.post("/auth/logout", isLoginUsuario, function (req, res) {
-  console.log("Logout OK: ", req.usuarioIndex);
-  res.json({ index: -1 });
-});
-
-/**
- * @swagger
- * /usuarios:
- *  get:
- *    tags: [usuarios]
- *    summary: usuarios
- *    description: Listado de usuarios
- *    tag: Usuario
- *    parameters:
- *       - in: query
- *         name: index
- *         required: true
- *         description: Index del usuario logueado.
- *         schema:
- *           type: integer
- *           example: -1
- *    responses:
- *       200:
- *         description: Listado de usuarios
- */
-app.get(
-  "/usuarios",
-  isLoginUsuario,
-  isAdmin /*isLoginUsuarioAuth*/,
-  function (req, res) {
-    console.log(usuarios);
-    res.send(usuarios);
-  }
-);
-
-/**
- * @swagger
- * /usuarios/{id}:
- *  get:
- *    tags: [usuarios]
- *    summary: Recupera la información de un usuario  según su ID
- *    description: Información de un usuarios.
- *    parameters:
- *       - in: query
- *         name: index
- *         required: true
- *         description: ID del usuario a recuperar.
- *         schema:
- *           type: integer
- *           example: 1
- *    responses:
- *       200:
- *        description: Listado ok.
- *       404:
- *        description: usuario  no encontrado.
- */
-app.get("/usuarios/:id", isLoginUsuario, isAdmin, function (req, res) {
-  let usuario = req.usuario;
-  console.log(usuario);
-  res.send(usuario);
-});
-
-/**
- * @swagger
- * /usuarios/{id}/pedidos:
- *  get:
- *    tags: [usuarios]
- *    summary: Recupera la información pedidos según su ID
- *    description: Información de un usuarios.
- *    parameters:
- *       - in: query
- *         name: index
- *         required: true
- *         description: ID del usuario a recuperar sus pedidos.
- *         schema:
- *           type: integer
- *           example: -1
- *    responses:
- *       200:
- *        description: Listado de pedidos ok.
- *       404:
- *        description: Usuario  no encontrado.
- */
-app.get("/usuarios/:id/pedidos", isLoginUsuario, function (req, res) {
-  //TODO: Refactoring con /pedidos
-  pedidosUsuario = pedidos.filter(
-    (p) => req.usuario.admin || p.usuario == req.usuario.username
-  );
-  console.log(pedidosUsuario);
-  res.send(pedidosUsuario);
-});
-
-/**
- * @swagger
- * /usuarios/{id}:
- *  delete:
- *    tags: [usuarios]
- *    summary: Eliminar un usuario  según su ID
- *    description: Elimina el usuario .
- *    parameters:
- *       - in: query
- *         name: index
- *         required: true
- *         description: ID de usuario logueado.
- *         schema:
- *           type: integer
- *           example: -1
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID del usuario a eliminar.
- *         schema:
- *           type: integer
- *           example: -1
- *    responses:
- *       200:
- *        description: usuario  eliminado correctamente.
- *       404:
- *        description: usuario  no encontrado.
- */
-app.delete("/usuarios/:id", isLoginUsuario, isAdmin, function (req, res) {
-  //TODO: Modularizar
-  let usuario = req.usuario;
-  let index = req.usuarioIndex;
-  let indexABorrar = req.params.id;
-  // Recuperación de datos del usuario a borrar
-  usuarioABorrar = usuarios[indexABorrar];
-  console.log(indexABorrar, usuarioABorrar);
-  if (!usuarioABorrar) {
-    res.status(404).send({ resultado: `Usuario a borrar no encontrado` });
-  }
-  resultado = "Borrado según el indice: " + usuarioABorrar;
-  usuarioABorrar.borrado = true;
-  res.send({ resultado: resultado, valor: usuarioABorrar });
-});
+app.use(auth);
+app.use(usuario);
 
 // TODO: Desarrollar a futuro
 // /**

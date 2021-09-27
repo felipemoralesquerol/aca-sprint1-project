@@ -49,7 +49,7 @@ if (process.env.NODE_ENV !== "production") {
   usuarios.push(user1);
   usuarios.push(user2);
 }
-//console.log('Información de Usuarios cargada correctamente.', usuarios)
+console.log("Información de Usuarios cargada correctamente.", usuarios);
 
 /*  ************************* PRODUCTOS *************************** */
 if (process.env.NODE_ENV !== "production") {
