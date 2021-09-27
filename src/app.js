@@ -1,85 +1,90 @@
-const express = require('express');
-const morgan = require('morgan')
-const config = require('../config')
+const express = require("express");
+const morgan = require("morgan");
+require("dotenv").config();
+const db = require("../config/db");
+
 //Swagger
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUI = require('swagger-ui-express');
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUI = require("swagger-ui-express");
 
 const swaggerOptions = {
-    swaggerDefinition: {
-        info: {
-            title: 'API Resto',
-            version: '1.0.0',
-            description: 'Sprint Project N. 1'
-        }
+  swaggerDefinition: {
+    info: {
+      title: "API Resto",
+      version: "1.0.0",
+      description: "Sprint Project N. 1",
     },
-    apis: ["./src/app.js", './../routes/program.js'],
-    tags: [
-        {
-            name: 'general',
-            description: 'Operaciones generales'
-        },
-        {
-            name: 'auth',
-            description: 'Operaciones sobre autorización'
-        },
-        {
-            name: 'usuarios',
-            description: 'Operaciones sobre usuarios'
-        },
-        {
-            name: 'pedidos',
-            description: 'Operaciones sobre pedidos'
-        },
-        {
-            name: 'productos',
-            description: 'Operaciones sobre productos'
-        },
-        {
-            name: 'formas de pago',
-            description: 'Operaciones sobre formas de pago'
-        },
-    ]
-
+  },
+  apis: ["./src/routes/program.js", "./src/app.js"],
+  tags: [
+    {
+      name: "general",
+      description: "Operaciones generales",
+    },
+    {
+      name: "auth",
+      description: "Operaciones sobre autorización",
+    },
+    {
+      name: "usuarios",
+      description: "Operaciones sobre usuarios",
+    },
+    {
+      name: "pedidos",
+      description: "Operaciones sobre pedidos",
+    },
+    {
+      name: "productos",
+      description: "Operaciones sobre productos",
+    },
+    {
+      name: "formas de pago",
+      description: "Operaciones sobre formas de pago",
+    },
+  ],
 };
-
-
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 // Importacion de archivos particulares
 
 //const { usuarios } = require('./infoUsuarios');
-let { usuarios, Usuario, productos, Producto, pedidos, Pedido, pedidosEstado, formasDePago, FormasDePago } = require('../models/init');
+let {
+  usuarios,
+  Usuario,
+  productos,
+  Producto,
+  pedidos,
+  Pedido,
+  pedidosEstado,
+  formasDePago,
+  FormasDePago,
+} = require("./models/init");
 
-const { existeUsuario, isLoginUsuario, isLoginUsuarioAuth, isAdmin, nuevoUsuario } = require('./middleware');
+const {
+  existeUsuario,
+  isLoginUsuario,
+  isLoginUsuarioAuth,
+  isAdmin,
+  nuevoUsuario,
+} = require("./middleware");
 
-const program = require('./../routes/program.js');
+const program = require("./routes/program.js");
 
 // Inicializacion del server
 const app = express();
 
 app.use(express.json());
-app.use(morgan('dev'));
-
+app.use(morgan("dev"));
 
 /**
- * @swagger
- * /:
- *  get:
- *    tags: [generales]
- *    summary: programa
- *    description : Resto
- *    responses:
- *     200: 
- *       description: programa
+ * @1swagger
+ * /programa:
+ *   get:
+ *     description: Referencia al programa general
+ *     program: *default-integration
  */
-// app.get('/', function (req, res) {
-//     res.send({ programa: "Resto v1.0.2" })
-// })
-
-app.use('/', program);
-
+app.use("/", program);
 
 /**
  * @swagger
@@ -104,22 +109,19 @@ app.use('/', program);
  *              type: email
  *              example: admin@localhost
  *            password:
- *              description: Contraseña de usuario a loguearse 
+ *              description: Contraseña de usuario a loguearse
  *              type: string
  *              example: 1234
  *    responses:
  *      200:
- *       description: Login de usuario satisfactorio. 
+ *       description: Login de usuario satisfactorio.
  *      404:
  *       description: Usuario no encontrado (email y/o contraseña incorrecta)
  */
-app.post('/auth/login', existeUsuario, function (req, res) {
-    console.log('Login OK: ', req.usuarioIndex);
-    res.json({ index: req.usuarioIndex });
-})
-
-
-
+app.post("/auth/login", existeUsuario, function (req, res) {
+  console.log("Login OK: ", req.usuarioIndex);
+  res.json({ index: req.usuarioIndex });
+});
 
 /**
  * @swagger
@@ -154,15 +156,15 @@ app.post('/auth/login', existeUsuario, function (req, res) {
  *              type: password
  *              example: 1234
  *            nombre:
- *              description: Nombre del usuario 
+ *              description: Nombre del usuario
  *              type: string
  *              example: Juan
  *            apellido:
- *              description: Apellido del usuario 
+ *              description: Apellido del usuario
  *              type: string
  *              example: Gomez
  *            email:
- *              description: Correo electrónico del usuario 
+ *              description: Correo electrónico del usuario
  *              type: email
  *              example: juangomez@gmail.com
  *            direccionEnvio:
@@ -178,17 +180,32 @@ app.post('/auth/login', existeUsuario, function (req, res) {
  *       description: Usuario registrado
  *      401:
  *       description: Usuario no registrado
- *      
+ *
  */
-app.post('/auth/signup', nuevoUsuario, function (req, res) {
-    let { username, nombre, apellido, email, password, telefono, direccionEnvio } = req.body;
-    console.log(req.body);
-    usuario = new Usuario(username, nombre, apellido, email, password, telefono, direccionEnvio);
+app.post("/auth/signup", nuevoUsuario, function (req, res) {
+  let {
+    username,
+    nombre,
+    apellido,
+    email,
+    password,
+    telefono,
+    direccionEnvio,
+  } = req.body;
+  console.log(req.body);
+  usuario = new Usuario(
+    username,
+    nombre,
+    apellido,
+    email,
+    password,
+    telefono,
+    direccionEnvio
+  );
 
-    usuarios.push(usuario);
-    res.send(usuario);
+  usuarios.push(usuario);
+  res.send(usuario);
 });
-
 
 /**
  * @swagger
@@ -200,7 +217,7 @@ app.post('/auth/signup', nuevoUsuario, function (req, res) {
  *    consumes:
  *      - application/json
  *    parameters:
-*       - in: query
+ *       - in: query
  *         name: index
  *         required: true
  *         description: Index del usuario logueado.
@@ -209,14 +226,14 @@ app.post('/auth/signup', nuevoUsuario, function (req, res) {
  *           example: -1
  *    responses:
  *      200:
- *       description: Logout de usuario satisfactorio. 
+ *       description: Logout de usuario satisfactorio.
  *      404:
  *       description: Usuario no encontrado (id incorrecta)
  */
-app.post('/auth/logout', isLoginUsuario, function (req, res) {
-    console.log('Logout OK: ', req.usuarioIndex);
-    res.json({ index: -1 });
-})
+app.post("/auth/logout", isLoginUsuario, function (req, res) {
+  console.log("Logout OK: ", req.usuarioIndex);
+  res.json({ index: -1 });
+});
 
 /**
  * @swagger
@@ -238,13 +255,15 @@ app.post('/auth/logout', isLoginUsuario, function (req, res) {
  *       200:
  *         description: Listado de usuarios
  */
-app.get('/usuarios', isLoginUsuario, isAdmin /*isLoginUsuarioAuth*/, function (req, res) {
+app.get(
+  "/usuarios",
+  isLoginUsuario,
+  isAdmin /*isLoginUsuarioAuth*/,
+  function (req, res) {
     console.log(usuarios);
     res.send(usuarios);
-});
-
-
-
+  }
+);
 
 /**
  * @swagger
@@ -265,12 +284,12 @@ app.get('/usuarios', isLoginUsuario, isAdmin /*isLoginUsuarioAuth*/, function (r
  *       200:
  *        description: Listado ok.
  *       404:
- *        description: usuario  no encontrado.  
-*/
-app.get('/usuarios/:id', isLoginUsuario, isAdmin, function (req, res) {
-    let usuario = req.usuario;
-    console.log(usuario);
-    res.send(usuario);
+ *        description: usuario  no encontrado.
+ */
+app.get("/usuarios/:id", isLoginUsuario, isAdmin, function (req, res) {
+  let usuario = req.usuario;
+  console.log(usuario);
+  res.send(usuario);
 });
 
 /**
@@ -292,17 +311,16 @@ app.get('/usuarios/:id', isLoginUsuario, isAdmin, function (req, res) {
  *       200:
  *        description: Listado de pedidos ok.
  *       404:
- *        description: Usuario  no encontrado.  
-*/
-app.get('/usuarios/:id/pedidos', isLoginUsuario, function (req, res) {
-    //TODO: Refactoring con /pedidos
-    pedidosUsuario = pedidos.filter(p => req.usuario.admin || (p.usuario == req.usuario.username));
-    console.log(pedidosUsuario);
-    res.send(pedidosUsuario);
+ *        description: Usuario  no encontrado.
+ */
+app.get("/usuarios/:id/pedidos", isLoginUsuario, function (req, res) {
+  //TODO: Refactoring con /pedidos
+  pedidosUsuario = pedidos.filter(
+    (p) => req.usuario.admin || p.usuario == req.usuario.username
+  );
+  console.log(pedidosUsuario);
+  res.send(pedidosUsuario);
 });
-
-
-
 
 /**
  * @swagger
@@ -330,24 +348,23 @@ app.get('/usuarios/:id/pedidos', isLoginUsuario, function (req, res) {
  *       200:
  *        description: usuario  eliminado correctamente.
  *       404:
- *        description: usuario  no encontrado.  
+ *        description: usuario  no encontrado.
  */
-app.delete('/usuarios/:id', isLoginUsuario, isAdmin, function (req, res) {
-    //TODO: Modularizar
-    let usuario = req.usuario
-    let index = req.usuarioIndex
-    let indexABorrar = req.params.id;
-    // Recuperación de datos del usuario a borrar
-    usuarioABorrar = usuarios[indexABorrar];
-    console.log(indexABorrar, usuarioABorrar);
-    if (!usuarioABorrar) {
-        res.status(404).send({ resultado: `Usuario a borrar no encontrado` });
-    }
-    resultado = 'Borrado según el indice: ' + usuarioABorrar
-    usuarioABorrar.borrado = true
-    res.send({ resultado: resultado, valor: usuarioABorrar });
+app.delete("/usuarios/:id", isLoginUsuario, isAdmin, function (req, res) {
+  //TODO: Modularizar
+  let usuario = req.usuario;
+  let index = req.usuarioIndex;
+  let indexABorrar = req.params.id;
+  // Recuperación de datos del usuario a borrar
+  usuarioABorrar = usuarios[indexABorrar];
+  console.log(indexABorrar, usuarioABorrar);
+  if (!usuarioABorrar) {
+    res.status(404).send({ resultado: `Usuario a borrar no encontrado` });
+  }
+  resultado = "Borrado según el indice: " + usuarioABorrar;
+  usuarioABorrar.borrado = true;
+  res.send({ resultado: resultado, valor: usuarioABorrar });
 });
-
 
 // TODO: Desarrollar a futuro
 // /**
@@ -376,24 +393,24 @@ app.delete('/usuarios/:id', isLoginUsuario, isAdmin, function (req, res) {
 //  *              description: ID de usuario  a modificar
 //  *              type: integer
 //  *            marca:
-//  *              description: Marca del usuario 
+//  *              description: Marca del usuario
 //  *              type: string
 //  *            modelo:
-//  *              description: Modelo del usuario 
+//  *              description: Modelo del usuario
 //  *              type: string
 //  *            fechaFabricacion:
-//  *              description: Fecha de fabricacion del usuario 
+//  *              description: Fecha de fabricacion del usuario
 //  *              type: string
 //  *            cantidadPuertas:
-//  *              description: Cantidad de puertas del usuario 
+//  *              description: Cantidad de puertas del usuario
 //  *              type: integer
 //  *            disponibleVenta:
 //  *              description: Disponiniblidad de venta
 //  *              type: boolean
 //  *    responses:
 //  *      201:
-//  *       description: Agregado de usuario 
-//  *      
+//  *       description: Agregado de usuario
+//  *
 //  */
 // app.put('/usuarios/:id', existeUsuario, function (req, res) {
 //     let autoNuevo = req.body;
@@ -403,7 +420,6 @@ app.delete('/usuarios/:id', isLoginUsuario, isAdmin, function (req, res) {
 //     res.send({ resultado: resultado, valor: autoNuevo });
 // });
 
-
 /*PRODUCTOS*****************************************************************************************/
 /**
  * @swagger
@@ -411,7 +427,7 @@ app.delete('/usuarios/:id', isLoginUsuario, isAdmin, function (req, res) {
  *  get:
  *    tags: [productos]
  *    summary: productos
- *    description: Listado de productos 
+ *    description: Listado de productos
  *    parameters:
  *       - in: query
  *         name: index
@@ -424,14 +440,10 @@ app.delete('/usuarios/:id', isLoginUsuario, isAdmin, function (req, res) {
  *       200:
  *         description: Listado de usuarios
  */
-app.get('/productos', isLoginUsuario, function (req, res) {
-    console.log(productos);
-    res.send(productos);
+app.get("/productos", isLoginUsuario, function (req, res) {
+  console.log(productos);
+  res.send(productos);
 });
-
-
-
-
 
 /**
  * @swagger
@@ -449,7 +461,7 @@ app.get('/productos', isLoginUsuario, function (req, res) {
  *        description: Index del usuario logueado.
  *        schema:
  *          type: integer
- *          example: -1 
+ *          example: -1
  *      - in: body
  *        name: producto
  *        description: producto a crear
@@ -467,15 +479,15 @@ app.get('/productos', isLoginUsuario, function (req, res) {
  *              type: string
  *              example: XX
  *            nombre:
- *              description: Nombre del producto 
+ *              description: Nombre del producto
  *              type: string
  *              example: Ensalada Verde
  *            descripcion:
- *              description: Descripcion del producto 
+ *              description: Descripcion del producto
  *              type: string
  *              example: Ensalada verde en base a vegetales
  *            precioVenta:
- *              description: Precio de venta del producto 
+ *              description: Precio de venta del producto
  *              type: float
  *              example: 100
  *            stock:
@@ -487,15 +499,14 @@ app.get('/productos', isLoginUsuario, function (req, res) {
  *       description: Producto creado
  *      401:
  *       description: Producto no creado
- *      
+ *
  */
-app.post('/productos', isLoginUsuario, isAdmin, function (req, res) {
-    let producto = req.body;
-    console.log(producto);
-    productos.push(producto);
-    res.send(producto);
+app.post("/productos", isLoginUsuario, isAdmin, function (req, res) {
+  let producto = req.body;
+  console.log(producto);
+  productos.push(producto);
+  res.send(producto);
 });
-
 
 /**
  * @swagger
@@ -513,7 +524,7 @@ app.post('/productos', isLoginUsuario, isAdmin, function (req, res) {
  *        description: Index del usuario logueado.
  *        schema:
  *          type: integer
- *          example: -1 
+ *          example: -1
  *      - in: path
  *        name: codeProducto
  *        required: true
@@ -538,15 +549,15 @@ app.post('/productos', isLoginUsuario, isAdmin, function (req, res) {
  *              type: string
  *              example: XX
  *            nombre:
- *              description: Nombre del producto 
+ *              description: Nombre del producto
  *              type: string
  *              example: Ensalada Verde
  *            descripcion:
- *              description: Descripcion del producto 
+ *              description: Descripcion del producto
  *              type: string
  *              example: Ensalada verde en base a vegetales
  *            precioVenta:
- *              description: Precio de venta del producto 
+ *              description: Precio de venta del producto
  *              type: float
  *              example: 100
  *            stock:
@@ -556,28 +567,37 @@ app.post('/productos', isLoginUsuario, isAdmin, function (req, res) {
  *            borrado:
  *              description: Borrado
  *              type: boolean
- *              example: false 
+ *              example: false
  *    responses:
  *      201:
  *       description: Producto actualizado
  *      401:
  *       description: Producto no actualizado
- *      
+ *
  */
-app.put('/productos/:codeProducto', isLoginUsuario, isAdmin, function (req, res) {
+app.put(
+  "/productos/:codeProducto",
+  isLoginUsuario,
+  isAdmin,
+  function (req, res) {
     let productoActualizado = req.body;
     console.log(productoActualizado);
-    let index = productos.findIndex(elemento => elemento.codigo == productoActualizado.codigo && elemento.codigo == req.params.codeProducto);
+    let index = productos.findIndex(
+      (elemento) =>
+        elemento.codigo == productoActualizado.codigo &&
+        elemento.codigo == req.params.codeProducto
+    );
     if (index === -1) {
-        return res.status(404).send({ resultado: 'Producto no encontrado o código incorrecto' })
+      return res
+        .status(404)
+        .send({ resultado: "Producto no encontrado o código incorrecto" });
     }
     productos[index] = productoActualizado;
-    res.send({ resultado: 'Producto actualizado: ' + productoActualizado.codigo });
-});
-
-
-
-
+    res.send({
+      resultado: "Producto actualizado: " + productoActualizado.codigo,
+    });
+  }
+);
 
 /**
  * @swagger
@@ -605,24 +625,31 @@ app.put('/productos/:codeProducto', isLoginUsuario, isAdmin, function (req, res)
  *       200:
  *        description: producto eliminado correctamente.
  *       404:
- *        description: producto no encontrado.  
+ *        description: producto no encontrado.
  */
 
-app.delete('/productos/:codeProducto', isLoginUsuario, isAdmin, function (req, res) {
+app.delete(
+  "/productos/:codeProducto",
+  isLoginUsuario,
+  isAdmin,
+  function (req, res) {
     //TODO: Modularizar
     let codeABorrar = req.params.codeProducto;
     // Recuperación de datos del producto a borrar
-    productoABorrar = productos.find(elemento => elemento.codigo == codeABorrar);
+    productoABorrar = productos.find(
+      (elemento) => elemento.codigo == codeABorrar
+    );
     console.log(productoABorrar);
     if (!productoABorrar) {
-        return res.status(404).json({ resultado: `Producto a borrar no encontrado` });
+      return res
+        .status(404)
+        .json({ resultado: `Producto a borrar no encontrado` });
     }
-    resultado = 'Borrado según el indice: ' + productoABorrar
-    productoABorrar.borrado = true
+    resultado = "Borrado según el indice: " + productoABorrar;
+    productoABorrar.borrado = true;
     return res.json({ resultado: resultado, valor: productoABorrar });
-
-});
-
+  }
+);
 
 /*PEDIDOS**********************************************************************************************/
 /**
@@ -631,7 +658,7 @@ app.delete('/productos/:codeProducto', isLoginUsuario, isAdmin, function (req, r
  *  get:
  *    tags: [pedidos]
  *    summary: pedidos
- *    description: Listado de pedidos 
+ *    description: Listado de pedidos
  *    parameters:
  *       - in: query
  *         name: index
@@ -644,14 +671,13 @@ app.delete('/productos/:codeProducto', isLoginUsuario, isAdmin, function (req, r
  *       200:
  *         description: Listado de usuarios
  */
-app.get('/pedidos', isLoginUsuario, function (req, res) {
-    pedidosUsuario = pedidos.filter(p => req.usuario.admin || (p.usuario == req.usuario.username));
-    console.log(pedidosUsuario);
-    res.send(pedidosUsuario);
+app.get("/pedidos", isLoginUsuario, function (req, res) {
+  pedidosUsuario = pedidos.filter(
+    (p) => req.usuario.admin || p.usuario == req.usuario.username
+  );
+  console.log(pedidosUsuario);
+  res.send(pedidosUsuario);
 });
-
-
-
 
 /**
  * @swagger
@@ -669,7 +695,7 @@ app.get('/pedidos', isLoginUsuario, function (req, res) {
  *        description: Index del usuario logueado.
  *        schema:
  *          type: integer
- *          example: -1 
+ *          example: -1
  *      - in: body
  *        name: pedido
  *        description: producto a crear
@@ -681,9 +707,9 @@ app.get('/pedidos', isLoginUsuario, function (req, res) {
  *            direccionEnvio:
  *              description: Dirección de envio
  *              type: string
- *              example: 
+ *              example:
  *            formaDePago:
- *              description: Forma de Pago (EF, TC, TD, MP) 
+ *              description: Forma de Pago (EF, TC, TD, MP)
  *              type: string
  *              example: EF
  *    responses:
@@ -691,26 +717,25 @@ app.get('/pedidos', isLoginUsuario, function (req, res) {
  *       description: Pedido creado
  *      401:
  *       description: Pedido no creado
- *      
+ *
  */
-app.post('/pedidos', isLoginUsuario, function (req, res) {
-    let { direccionEnvio, formaDePago } = req.body;
-    usuario = req.usuario;
-    console.log(req.body);
-    if (!formaDePago in ['EF', 'TC', 'TD', 'MP']) {
-        return res.status(404).send({ resultado: `Forma de pago incorrecta: ${formaDePago}` });
-    }
-    direccionEnvio = direccionEnvio || usuario.direccionEnvio;
-    pedido = new Pedido(usuario.username, formaDePago);
-    pedido.setDireccionEnvio(direccionEnvio);
-    //Agregado de pedido a la lista global de pedidos 
-    addPedido(pedido);
-    console.log(pedidos)
-    res.send(pedido);
+app.post("/pedidos", isLoginUsuario, function (req, res) {
+  let { direccionEnvio, formaDePago } = req.body;
+  usuario = req.usuario;
+  console.log(req.body);
+  if (!formaDePago in ["EF", "TC", "TD", "MP"]) {
+    return res
+      .status(404)
+      .send({ resultado: `Forma de pago incorrecta: ${formaDePago}` });
+  }
+  direccionEnvio = direccionEnvio || usuario.direccionEnvio;
+  pedido = new Pedido(usuario.username, formaDePago);
+  pedido.setDireccionEnvio(direccionEnvio);
+  //Agregado de pedido a la lista global de pedidos
+  addPedido(pedido);
+  console.log(pedidos);
+  res.send(pedido);
 });
-
-
-
 
 /**
  * @swagger
@@ -728,7 +753,7 @@ app.post('/pedidos', isLoginUsuario, function (req, res) {
  *        description: Index del usuario logueado.
  *        schema:
  *          type: integer
- *          example: -1 
+ *          example: -1
  *      - in: path
  *        name: id
  *        required: true
@@ -749,7 +774,7 @@ app.post('/pedidos', isLoginUsuario, function (req, res) {
  *              type: string
  *              example: "Calle x"
  *            formaDePago:
- *              description: Forma de Pago (EF, TC, TD, MP) 
+ *              description: Forma de Pago (EF, TC, TD, MP)
  *              type: string
  *              example: EF
  *    responses:
@@ -757,33 +782,39 @@ app.post('/pedidos', isLoginUsuario, function (req, res) {
  *       description: Pedido modificado
  *      401:
  *       description: Pedido no modificado debido a error
- *      
+ *
  */
-app.put('/pedidos/:id', isLoginUsuario, function (req, res) {
-    idPedido = req.params.id;
-    let { direccionEnvio, formaDePago } = req.body;
-    usuario = req.usuario;
-    console.log(req.body);
-    if (!formaDePago in ['EF', 'TC', 'TD', 'MP']) {
-        return res.status(404).send({ resultado: `Forma de pago incorrecta: ${formaDePago}` });
-    }
+app.put("/pedidos/:id", isLoginUsuario, function (req, res) {
+  idPedido = req.params.id;
+  let { direccionEnvio, formaDePago } = req.body;
+  usuario = req.usuario;
+  console.log(req.body);
+  if (!formaDePago in ["EF", "TC", "TD", "MP"]) {
+    return res
+      .status(404)
+      .send({ resultado: `Forma de pago incorrecta: ${formaDePago}` });
+  }
 
-    pedido = pedidos.find(p => ((p.id == idPedido) && (p.usuario == req.usuario.username)));
-    if (!pedido) {
-        return res.status(404).send({ resultado: `ID de pedido no encontrado: ${idPedido}` });
-    }
-    //Requerimiento adicional (s). Los usuarios solo pueden agregar productos si el pedido está PEN
-    if (pedido.estado != 'PEN') {
-        return res.status(404).send({ resultado: `Un usuario solo puede modificar un pedido en estado pendiente` })
-    }
-    direccionEnvio = direccionEnvio || usuario.direccionEnvio;
-    pedido.setFormaDePago(formaDePago);
-    pedido.setDireccionEnvio(direccionEnvio);
-    console.log(pedidos)
-    res.send(pedido);
+  pedido = pedidos.find(
+    (p) => p.id == idPedido && p.usuario == req.usuario.username
+  );
+  if (!pedido) {
+    return res
+      .status(404)
+      .send({ resultado: `ID de pedido no encontrado: ${idPedido}` });
+  }
+  //Requerimiento adicional (s). Los usuarios solo pueden agregar productos si el pedido está PEN
+  if (pedido.estado != "PEN") {
+    return res.status(404).send({
+      resultado: `Un usuario solo puede modificar un pedido en estado pendiente`,
+    });
+  }
+  direccionEnvio = direccionEnvio || usuario.direccionEnvio;
+  pedido.setFormaDePago(formaDePago);
+  pedido.setDireccionEnvio(direccionEnvio);
+  console.log(pedidos);
+  res.send(pedido);
 });
-
-
 
 /**
  * @swagger
@@ -791,7 +822,7 @@ app.put('/pedidos/:id', isLoginUsuario, function (req, res) {
  *  get:
  *    tags: [pedidos]
  *    summary: pedidos según id pedido
- *    description: Listado de pedidos 
+ *    description: Listado de pedidos
  *    parameters:
  *       - in: query
  *         name: index
@@ -811,18 +842,21 @@ app.put('/pedidos/:id', isLoginUsuario, function (req, res) {
  *       200:
  *         description: Listado de usuarios
  */
-app.get('/pedidos/:id', isLoginUsuario, function (req, res) {
-    idPedido = req.params.id;
-    console.log(req.params, req.query.index);
-    pedidosUsuario = pedidos.find(p => (p.id == idPedido && (req.usuario.admin || (p.usuario == req.usuario.username))));
-    console.log(idPedido, pedidosUsuario);
-    if (!pedidosUsuario) {
-        res.status(404).json({ message: "Orden no encontrada" })
-    } else {
-        res.send(pedidosUsuario);
-    }
+app.get("/pedidos/:id", isLoginUsuario, function (req, res) {
+  idPedido = req.params.id;
+  console.log(req.params, req.query.index);
+  pedidosUsuario = pedidos.find(
+    (p) =>
+      p.id == idPedido &&
+      (req.usuario.admin || p.usuario == req.usuario.username)
+  );
+  console.log(idPedido, pedidosUsuario);
+  if (!pedidosUsuario) {
+    res.status(404).json({ message: "Orden no encontrada" });
+  } else {
+    res.send(pedidosUsuario);
+  }
 });
-
 
 /**
  * @swagger
@@ -830,10 +864,10 @@ app.get('/pedidos/:id', isLoginUsuario, function (req, res) {
  *  post:
  *    tags: [pedidos]
  *    summary: pedidos según id pedido
- *    description: Listado de pedidos 
+ *    description: Listado de pedidos
  *    consumes:
  *      - application/json
- *    parameters:   
+ *    parameters:
  *      - in: query
  *        name: index
  *        required: true
@@ -864,28 +898,43 @@ app.get('/pedidos/:id', isLoginUsuario, function (req, res) {
  *      200:
  *        description: Ok de producto agregado
  */
-app.post('/pedidos/:id/producto/:codeProducto', isLoginUsuario, function (req, res) {
+app.post(
+  "/pedidos/:id/producto/:codeProducto",
+  isLoginUsuario,
+  function (req, res) {
     idPedido = req.params.id;
     console.log(req.params, req.query.index, req.body);
-    pedidoUsuario = pedidos.find(p => (p.id == idPedido && (req.usuario.admin || (p.usuario == req.usuario.username))));
+    pedidoUsuario = pedidos.find(
+      (p) =>
+        p.id == idPedido &&
+        (req.usuario.admin || p.usuario == req.usuario.username)
+    );
     if (!pedidoUsuario) {
-        return res.status(404).send({ resultado: `Id Pedido no encontrado` })
+      return res.status(404).send({ resultado: `Id Pedido no encontrado` });
     }
     //Requerimiento adicional (s). Los usuarios solo pueden agregar productos si el pedido está PEN
-    if (!req.usuario.admin && pedidoUsuario.estado != 'PEN') {
-        return res.status(404).send({ resultado: `Un usuario solo puede agregar productos a pedidos en estado pendiente` })
+    if (!req.usuario.admin && pedidoUsuario.estado != "PEN") {
+      return res.status(404).send({
+        resultado: `Un usuario solo puede agregar productos a pedidos en estado pendiente`,
+      });
     }
     codeProducto = req.body.codeProducto;
-    producto = productos.find(p => p.codigo == codeProducto && !p.borrado)
+    producto = productos.find((p) => p.codigo == codeProducto && !p.borrado);
     if (!producto) {
-        return res.status(404).send({ resultado: `Código de producto no encontrado o inhabilitado` })
+      return res
+        .status(404)
+        .send({ resultado: `Código de producto no encontrado o inhabilitado` });
     }
     console.log(codeProducto, producto);
     pedidoUsuario.addProducto(producto);
     console.log(pedidoUsuario);
-    res.send({ resultado: 'Producto agregado correctamente. El pedido sale: ' + pedidoUsuario.montoTotal });
-});
-
+    res.send({
+      resultado:
+        "Producto agregado correctamente. El pedido sale: " +
+        pedidoUsuario.montoTotal,
+    });
+  }
+);
 
 /**
  * @swagger
@@ -893,10 +942,10 @@ app.post('/pedidos/:id/producto/:codeProducto', isLoginUsuario, function (req, r
  *  patch:
  *    tags: [pedidos]
  *    summary: Cambio de estado
- *    description: Cambio de estado de pedido vía id pedido 
+ *    description: Cambio de estado de pedido vía id pedido
  *    consumes:
  *      - application/json
- *    parameters:   
+ *    parameters:
  *      - in: query
  *        name: index
  *        required: true
@@ -927,24 +976,38 @@ app.post('/pedidos/:id/producto/:codeProducto', isLoginUsuario, function (req, r
  *      200:
  *        description: Ok de producto agregado
  */
-app.patch('/pedidos/:id/estado/:codeEstado', isLoginUsuario, isAdmin, function (req, res) {
+app.patch(
+  "/pedidos/:id/estado/:codeEstado",
+  isLoginUsuario,
+  isAdmin,
+  function (req, res) {
     idPedido = req.params.id;
     console.log(req.params, req.query.index, req.body);
-    pedidosUsuario = pedidos.find(p => (p.id == idPedido && (req.usuario.admin || (p.usuario == req.usuario.username))));
+    pedidosUsuario = pedidos.find(
+      (p) =>
+        p.id == idPedido &&
+        (req.usuario.admin || p.usuario == req.usuario.username)
+    );
     if (!pedidosUsuario) {
-        return res.status(404).send({ resultado: `Id Pedido no encontrado` })
+      return res.status(404).send({ resultado: `Id Pedido no encontrado` });
     }
     //Chequeo de Estado
     codeEstado = req.body.codeEstado;
-    Estado = pedidosEstado.find(pe => pe == codeEstado);
+    Estado = pedidosEstado.find((pe) => pe == codeEstado);
     if (!Estado) {
-        return res.status(404).send({ resultado: `Código de Estado no encontrado` })
+      return res
+        .status(404)
+        .send({ resultado: `Código de Estado no encontrado` });
     }
     console.log(codeEstado, Estado);
     pedidosUsuario.setEstado(Estado);
     console.log(pedidosUsuario);
-    res.send({ resultado: 'Cambio de Estado. El pedido está en : ' + pedidosUsuario.getEstado() });
-});
+    res.send({
+      resultado:
+        "Cambio de Estado. El pedido está en : " + pedidosUsuario.getEstado(),
+    });
+  }
+);
 
 /*FORMAS DE PAGO  ****************************************************************************************/
 /**
@@ -953,7 +1016,7 @@ app.patch('/pedidos/:id/estado/:codeEstado', isLoginUsuario, isAdmin, function (
  *  get:
  *    tags: [formas de pago]
  *    summary: Formas de Pago
- *    description: Listado de formas de pago 
+ *    description: Listado de formas de pago
  *    parameters:
  *       - in: query
  *         name: index
@@ -966,11 +1029,10 @@ app.patch('/pedidos/:id/estado/:codeEstado', isLoginUsuario, isAdmin, function (
  *       200:
  *         description: Listado de formas de pago
  */
-app.get('/formasDePago', isLoginUsuario, function (req, res) {
-    console.log(formasDePago);
-    res.send(formasDePago);
+app.get("/formasDePago", isLoginUsuario, function (req, res) {
+  console.log(formasDePago);
+  res.send(formasDePago);
 });
-
 
 /**
  * @swagger
@@ -988,7 +1050,7 @@ app.get('/formasDePago', isLoginUsuario, function (req, res) {
  *        description: Index del usuario logueado.
  *        schema:
  *          type: integer
- *          example: -1 
+ *          example: -1
  *      - in: body
  *        name: formaDePago
  *        description: producto a crear
@@ -1003,7 +1065,7 @@ app.get('/formasDePago', isLoginUsuario, function (req, res) {
  *              type: string
  *              example: EF
  *            nombre:
- *              description: Nombre de la forma de pago 
+ *              description: Nombre de la forma de pago
  *              type: string
  *              example: Efectivo
  *    responses:
@@ -1011,20 +1073,19 @@ app.get('/formasDePago', isLoginUsuario, function (req, res) {
  *       description: Forma de pago creada
  *      401:
  *       description: Forma de pago no creada
- *      
+ *
  */
-app.post('/formasDePago', isLoginUsuario, isAdmin, function (req, res) {
-    let formaDePago = req.body;
-    console.log(formaDePago);
-    formaDePagoNueva = new FormasDePago(formaDePago.codigo, formasDePago.nombre);
-    formasDePago.push(formaDePagoNueva);
-    res.send(formaDePagoNueva);
+app.post("/formasDePago", isLoginUsuario, isAdmin, function (req, res) {
+  let formaDePago = req.body;
+  console.log(formaDePago);
+  formaDePagoNueva = new FormasDePago(formaDePago.codigo, formasDePago.nombre);
+  formasDePago.push(formaDePagoNueva);
+  res.send(formaDePagoNueva);
 });
 
-
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 // view in localhost:5000/api-docs
 
-app.listen(config.port, function () {
-    console.log(`Escuchando el puerto ${config.port}!`);
+app.listen(process.env.APP_PORT, function () {
+  console.log(`Escuchando el puerto ${process.env.APP_PORT}!`);
 });

@@ -19,6 +19,10 @@ Sprint Project N. 1 en el marco del Curso de Desarrollo Web Backend de Acámica 
 * "require-from-url": "^3.1.3"
 * "swagger-jsdoc": "^6.1.0"
 * "swagger-ui-express": "^4.1.6"
+* "dotenv": "^10.0.0""
+* "mongoose": "^6.0.5"
+* "mysql2": "^2.3.0"
+* "sequelize": "^6.6.5"
 
 #### Instrucciones de instalación:
 
@@ -27,7 +31,9 @@ Sprint Project N. 1 en el marco del Curso de Desarrollo Web Backend de Acámica 
     `git clone https://github.com/felipemoralesquerol/aca-sprint1-project`
 3. Ingresar a la carpeta aca-sprint1-project.
 4. Ejecutar `npm install`.
-5. Arrancar el servidor ejecutando `node src/app.js`
+5. Copiar el archivo .env.example a .env
+6. Configurar las variables de entorno del archivo .env a su configuración
+7. Arrancar el servidor ejecutando `node src/app.js`
 
 #### Documentación de la aplicación con SWAGGER:
 
