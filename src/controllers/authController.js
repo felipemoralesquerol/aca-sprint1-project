@@ -81,6 +81,8 @@ exports.authenticated = function authenticated(req, res, next) {
           res.status(403).send({ status: "Acceso denegado" });
         } else {
           req.authData = authData;
+          //TODO: Recuperar data del usuario
+
           next();
         }
       });

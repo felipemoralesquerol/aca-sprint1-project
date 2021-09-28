@@ -14,12 +14,12 @@ Sprint Project N. 1 en el marco del Curso de Desarrollo Web Backend de Acámica 
 - "express": "^4.17.1"
 - "jsonwebtoken": "^8.5.1"
 - "morgan": "^1.10.0"
-- "nodemon": "^2.0.12"
+- "nodemon": "^2.0.13"
 - "require-from-url": "^3.1.3"
 - "swagger-jsdoc": "^6.1.0"
 - "swagger-ui-express": "^4.1.6"
 - "dotenv": "^10.0.0""
-- "mongoose": "^6.0.5"
+- "mongoose": "^6.0.8"
 - "mysql2": "^2.3.0"
 - "sequelize": "^6.6.5"
 
@@ -32,7 +32,8 @@ Sprint Project N. 1 en el marco del Curso de Desarrollo Web Backend de Acámica 
 4. Ejecutar `npm install`.
 5. Copiar el archivo .env.example a .env
 6. Configurar las variables de entorno del archivo .env a su configuración
-7. Arrancar el servidor ejecutando `npm run dev`
+7. Chequear las dependencias utilizadas vía `npm-check`
+8. Arrancar el servidor ejecutando `npm run dev`
 
 #### Documentación de la aplicación con SWAGGER:
 
