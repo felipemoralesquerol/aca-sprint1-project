@@ -1,9 +1,9 @@
 const express = require("express");
 let router = express.Router();
 
-let { formasDePago } = require("./../models/init");
+let { formasDePago } = require("../models/init");
 
-const authController = require("./../controllers/authController");
+const authController = require("../controllers/authController");
 
 /**
  * @swagger

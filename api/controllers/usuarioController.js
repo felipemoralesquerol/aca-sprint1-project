@@ -1,4 +1,4 @@
-const usuarios = require("./../models/usuarios");
+const usuarios = require("../models/usuarios");
 
 exports.list = function list(req, res, next) {
   console.log(usuarios);

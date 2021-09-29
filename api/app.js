@@ -32,10 +32,10 @@ const swaggerOptions = {
     ],
   },
   apis: [
-    "./src/routes/program.js",
-    "./src/routes/auth.js",
-    "./src/routes/usuario.js",
-    "./src/app.js",
+    "./api/routes/program.js",
+    "./api/routes/auth.js",
+    "./api/routes/usuario.js",
+    "./api/app.js",
   ],
   tags: [
     {

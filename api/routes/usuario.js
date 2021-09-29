@@ -1,8 +1,8 @@
 const express = require("express");
 let router = express.Router();
 
-const authController = require("./../controllers/authController");
-const Controller = require("./../controllers/usuarioController");
+const authController = require("../controllers/authController");
+const Controller = require("../controllers/usuarioController");
 
 /**
  * @swagger
@@ -34,14 +34,16 @@ router.get(
  *    tags: [usuarios]
  *    summary: Recupera la información de un usuario  según su ID
  *    description: Información de un usuarios.
+ *    security:
+ *      - bearerAuth: []
  *    parameters:
  *       - in: query
  *         name: index
  *         required: true
- *         description: ID del usuario a recuperar.
+ *         description: ID del usuario a recuperar sus pedidos.
  *         schema:
  *           type: integer
- *           example: 1
+ *           example: -1
  *    responses:
  *       200:
  *        description: Listado ok.

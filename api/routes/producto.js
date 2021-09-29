@@ -1,8 +1,8 @@
 const express = require("express");
 let router = express.Router();
 
-let { productos } = require("./../models/init");
-const authController = require("./../controllers/authController");
+let { productos } = require("../models/init");
+const authController = require("../controllers/authController");
 
 /**
  * @swagger
