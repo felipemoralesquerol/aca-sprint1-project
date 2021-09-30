@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+const httpError = require("../helpers/httpError");
+const httpDenied = require("../helpers/httpDenied");
 
 // Login
 exports.signin = function signin(req, res, next) {
@@ -33,8 +35,7 @@ exports.signin = function signin(req, res, next) {
       }
     );
   } catch (err) {
-    console.error("Error interno: " + err.message);
-    res.status(500).send({ status: "Error interno" });
+    httpError(req, res, err);
   }
 };
 
@@ -51,8 +52,7 @@ exports.signup = function signup(req, res, next) {
       { expiresIn: process.env.JWT_EXPIRES_IN },
       (err, token) => {
         if (err) {
-          console.error("Error interno: " + err.message);
-          res.status(500).send({ status: "Error interno" });
+          httpError(req, res, err);
         } else {
           req.token = token;
           res.json({ status: "signup", token });
@@ -60,8 +60,7 @@ exports.signup = function signup(req, res, next) {
       }
     );
   } catch (err) {
-    console.error("Error interno: " + err.message);
-    res.status(500).send({ status: "Error interno" });
+    httpError(req, res, err);
   }
 };
 
@@ -71,14 +70,16 @@ exports.authenticated = function authenticated(req, res, next) {
   //       Bearer {token}, donde este token haya sido suministrado por signin o signup
   try {
     if (!req.headers.authorization) {
-      console.error("Acceso denegado por falta de información de autorización");
-      res.status(403).send({ status: "Acceso denegado" });
+      httpDenied(
+        req,
+        res,
+        "Acceso denegado por falta de información de autorización"
+      );
     } else {
       const token = req.headers.authorization.split(" ")[1];
       jwt.verify(token, process.env.JWT_SECRET_KEY, (err, authData) => {
         if (err) {
-          console.error("Acceso denegado: " + err.message);
-          res.status(403).send({ status: "Acceso denegado" });
+          httpDenied(req, res, "Acceso denegado: " + err.message);
         } else {
           req.authData = authData;
           //TODO: Recuperar data del usuario
@@ -88,8 +89,7 @@ exports.authenticated = function authenticated(req, res, next) {
       });
     }
   } catch (err) {
-    console.error("Error interno: " + err.message);
-    res.status(500).send({ status: "Error interno" });
+    httpError(req, res, err);
   }
 };
 
