@@ -1,7 +1,7 @@
 const express = require("express");
 let router = express.Router();
 
-let { formasDePago } = require("../models/init");
+const FormasDePagoModel = require("../models/formaDePago");
 
 const authController = require("../controllers/authController");
 
@@ -27,9 +27,15 @@ const authController = require("../controllers/authController");
 router.get(
   "/api/formasDePago",
   authController.authenticated,
-  function (req, res) {
-    console.log(formasDePago);
-    res.send(formasDePago);
+  async function (req, res) {
+    try {
+      const formasDePago = await FormasDePagoModel.findAll();
+      console.log(formasDePago);
+      res.send(formasDePago);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ status: "Error interno" });
+    }
   }
 );
 

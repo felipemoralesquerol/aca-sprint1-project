@@ -1,6 +1,7 @@
+require("dotenv").config();
+
 const express = require("express");
 const morgan = require("morgan");
-require("dotenv").config();
 const db = require("../config/db");
 
 //Swagger
@@ -10,7 +11,7 @@ const swaggerUI = require("swagger-ui-express");
 const swaggerOptions = {
   swaggerDefinition: {
     //servers: ["http://localhost:5000/"],
-    openapi: "3.0.3", // present supported openapi version
+    openapi: "3.0.3",
     info: {
       title: "API Resto",
       version: "1.0.0",
@@ -35,6 +36,7 @@ const swaggerOptions = {
     "./api/routes/program.js",
     "./api/routes/auth.js",
     "./api/routes/usuario.js",
+    "./api/routes/producto.js",
     "./api/app.js",
   ],
   tags: [
@@ -66,14 +68,6 @@ const swaggerOptions = {
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-
-// const {
-//   existeUsuario,
-//   isLoginUsuario,
-//   isLoginUsuarioAuth,
-//   isAdmin,
-//   nuevoUsuario,
-// } = require("./middleware");
 
 // Inicializacion del server
 const app = express();

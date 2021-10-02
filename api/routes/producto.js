@@ -1,7 +1,7 @@
 const express = require("express");
 let router = express.Router();
 
-let { productos } = require("../models/init");
+const ProductosModel = require("../models/productos");
 const authController = require("../controllers/authController");
 
 /**
@@ -23,10 +23,20 @@ const authController = require("../controllers/authController");
  *       200:
  *         description: Listado de usuarios
  */
-router.get("/api/productos", authController.authenticated, function (req, res) {
-  console.log(productos);
-  res.send(productos);
-});
+router.get(
+  "/api/productos",
+  authController.authenticated,
+  async function (req, res) {
+    try {
+      const productos = await ProductosModel.findAll();
+      console.log(productos);
+      res.send(productos);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ status: "Error interno" });
+    }
+  }
+);
 
 /**
  * @swagger
