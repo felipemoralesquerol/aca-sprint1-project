@@ -5,6 +5,7 @@ const productos = require("../models/productos");
 const pedidos = require("../models//pedidos");
 
 const authController = require("../controllers/authController");
+const pedidoController = require("../controllers/pedidoController");
 
 /**
  * @swagger
@@ -25,13 +26,7 @@ const authController = require("../controllers/authController");
  *       200:
  *         description: Listado de usuarios
  */
-router.get("/api/pedidos", authController.authenticated, function (req, res) {
-  pedidosUsuario = pedidos.filter(
-    (p) => req.authData.admin || p.usuario == req.authData.username
-  );
-  console.log(pedidosUsuario);
-  res.send(pedidosUsuario);
-});
+router.get("/api/pedidos", authController.authenticated, pedidoController.list);
 
 /**
  * @swagger
@@ -73,23 +68,11 @@ router.get("/api/pedidos", authController.authenticated, function (req, res) {
  *       description: Pedido no creado
  *
  */
-router.post("/api/pedidos", authController.authenticated, function (req, res) {
-  let { direccionEnvio, formaDePago } = req.body;
-  usuario = req.usuario;
-  console.log(req.body);
-  if (!formaDePago in ["EF", "TC", "TD", "MP"]) {
-    return res
-      .status(404)
-      .send({ resultado: `Forma de pago incorrecta: ${formaDePago}` });
-  }
-  direccionEnvio = direccionEnvio || usuario.direccionEnvio;
-  pedido = new Pedido(usuario.username, formaDePago);
-  pedido.setDireccionEnvio(direccionEnvio);
-  //Agregado de pedido a la lista global de pedidos
-  addPedido(pedido);
-  console.log(pedidos);
-  res.send(pedido);
-});
+router.post(
+  "/api/pedidos",
+  authController.authenticated,
+  pedidoController.agregar
+);
 
 /**
  * @swagger

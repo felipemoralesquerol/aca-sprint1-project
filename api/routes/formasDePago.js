@@ -1,9 +1,10 @@
 const express = require("express");
-let router = express.Router();
+const router = express.Router();
 
 const FormasDePagoModel = require("../models/formaDePago");
 
 const authController = require("../controllers/authController");
+const formasDePagoController = require("../controllers/formasDePagoController");
 
 /**
  * @swagger
@@ -27,16 +28,7 @@ const authController = require("../controllers/authController");
 router.get(
   "/api/formasDePago",
   authController.authenticated,
-  async function (req, res) {
-    try {
-      const formasDePago = await FormasDePagoModel.findAll();
-      console.log(formasDePago);
-      res.send(formasDePago);
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({ status: "Error interno" });
-    }
-  }
+  formasDePagoController.list
 );
 
 /**
@@ -78,22 +70,12 @@ router.get(
  *       description: Forma de pago creada
  *      401:
  *       description: Forma de pago no creada
- *
  */
 router.post(
   "/api/formasDePago",
   authController.authenticated,
   authController.isAdmin,
-  function (req, res) {
-    let formaDePago = req.body;
-    console.log(formaDePago);
-    formaDePagoNueva = new FormasDePago(
-      formaDePago.codigo,
-      formasDePago.nombre
-    );
-    formasDePago.push(formaDePagoNueva);
-    res.send(formaDePagoNueva);
-  }
+  formasDePagoController.agregar
 );
 
 module.exports = router;

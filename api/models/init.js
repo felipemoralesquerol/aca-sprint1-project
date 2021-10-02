@@ -3,7 +3,7 @@
 // carga de información adicional
 let { usuarios, Usuario } = require("./usuarios");
 let { productos, Producto } = require("./productos");
-let { pedidos, pedidosEstado, Pedido } = require("./pedidos");
+const PedidosModel = require("./pedidos");
 const FormasDePagoModel = require("./formaDePago");
 
 /*  *********************** FORMAS DE PAGO************************ */
@@ -115,8 +115,6 @@ module.exports = {
   Usuario,
   productos,
   Producto,
-  pedidos,
-  pedidosEstado,
-  Pedido,
+  PedidosModel,
   FormasDePagoModel,
 };

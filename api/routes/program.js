@@ -16,8 +16,6 @@ const init = require("./../models/init");
  *        description: Descripción de la versión
  */
 router.get("/", function (req, res) {
-  //TODO: Crear otra forma de gestionar la carga por defecto
-  init.agregarDefaultFormasDePago();
   res.send({ programa: "Resto v2.0.0" });
 });
 
