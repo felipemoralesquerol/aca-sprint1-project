@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const morgan = require("morgan");
+const helmet = require("helmet");
 const db = require("../config/db");
 
 //Swagger
@@ -76,6 +77,7 @@ const { Router } = require("express");
 const router = Router();
 
 app.use(express.json());
+app.use(helmet());
 app.use(morgan("dev"));
 
 const program = require("./routes/program.js");
@@ -88,6 +90,7 @@ const productoRoutes = require("./routes/producto");
 const pedidoRoutes = require("./routes/pedido");
 const formasDePagoRoutes = require("./routes/formasDePago");
 
+// Definición de rutas
 app.use(authRoutes);
 app.use(usuarioRoutes);
 app.use(productoRoutes);
@@ -97,6 +100,7 @@ app.use(formasDePagoRoutes);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 // view in localhost:5000/api-docs
 
+// Activación de la app en modo escucha
 app.listen(process.env.APP_PORT, function () {
   console.log(`Escuchando el puerto ${process.env.APP_PORT}!`);
 });
