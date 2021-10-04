@@ -3,6 +3,7 @@
 #### Descripción
 
 Sprint Project N. 1 en el marco del Curso de Desarrollo Web Backend de Acámica 2021 (Jun/Oct)!
+Adaptaciones para soporte de Sprint Project N. 2
 
 #### Prerrequisitos tecnológicos:
 
