@@ -1,4 +1,4 @@
-const httpError = require("./../helpers/httpError");
+const httpMessage = require("./../helpers/httpMessage");
 const pedidos = require("../models/pedidos");
 
 exports.list = async function list(req, res, next) {
@@ -9,7 +9,7 @@ exports.list = async function list(req, res, next) {
     res.json({ usuarios: data });
     //res.json(data);
   } catch (error) {
-    httpError(req, res, error);
+    httpMessage.Error(req, res, error);
   }
 };
 
@@ -36,7 +36,7 @@ exports.agregar = async function list(req, res, next) {
     console.log(data);
     res.json({ status: data });
   } catch (error) {
-    httpError(req, res, error);
+    hhttpMessage.Error(req, res, error);
   }
 };
 // exports.pedidos = function pedidos(req, res) {

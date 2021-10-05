@@ -1,41 +1,43 @@
 const jwt = require("jsonwebtoken");
-const httpError = require("../helpers/httpError");
-const httpDenied = require("../helpers/httpDenied");
+const httpMessage = require("../helpers/httpMessage");
+const passwordManager = require("../helpers/passwordManager");
+
+const UsuariosModel = require("../models/usuarios");
 
 // Login
-exports.signin = function signin(req, res, next) {
+exports.signin = async function signin(req, res, next) {
   try {
-    // TODO: Implementar acceso a base de datos
     const { email, password } = req.body;
     console.log("signin", email, password);
+    const usuario = await UsuariosModel.findOne({ where: { email: email } });
 
-    // TODO: Verificar credenciales de usuario en base de datos
-    // if (
-    //   (username != "felipe" || password != "1234") &&
-    //   (username != "juangomez" || password != "1234")
-    // ) {
-    //   console.error("Error de credenciales: ");
-    //   res
-    //     .status(401)
-    //     .send({ status: "Error de credenciales. Acceso denegado" });
-    // }
-
-    jwt.sign(
-      req.body,
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: process.env.JWT_EXPIRES_IN },
-      (err, token) => {
-        if (err) {
-          console.error("Error interno: " + err.message);
-          res.status(500).send({ status: "Error interno" });
-        } else {
-          req.token = token;
-          res.json({ status: "signin", token });
-        }
+    if (!usuario) {
+      httpMessage.NotFound("Credenciales incorrectas", res);
+    } else {
+      const compare = passwordManager.comparePassword(
+        password,
+        usuario.password
+      );
+      if (compare) {
+        const data = jwt.sign(
+          req.body,
+          process.env.JWT_SECRET_KEY,
+          { expiresIn: process.env.JWT_EXPIRES_IN },
+          (err, token) => {
+            if (err) {
+              httpMessage.Error(req, res, err);
+            } else {
+              req.token = token;
+              res.json({ status: "signin", token });
+            }
+          }
+        );
+      } else {
+        httpMessage.NotAccess(req, res);
       }
-    );
+    }
   } catch (err) {
-    httpError(req, res, err);
+    httpMessage.Error(req, res, err);
   }
 };
 
@@ -60,7 +62,7 @@ exports.signup = function signup(req, res, next) {
       }
     );
   } catch (err) {
-    httpError(req, res, err);
+    httpMessage.Error(req, res, err);
   }
 };
 
@@ -89,7 +91,7 @@ exports.authenticated = function authenticated(req, res, next) {
       });
     }
   } catch (err) {
-    httpError(req, res, err);
+    httpMessage.Error(req, res, err);
   }
 };
 

@@ -1,10 +1,10 @@
 //console.log('Información de Ambiente: ' + process.env.NODE_ENV);
 
 // carga de información adicional
-let { usuarios, Usuario } = require("./usuarios");
-let { productos, Producto } = require("./productos");
+const ProductosModel = require("./productos");
 const PedidosModel = require("./pedidos");
 const FormasDePagoModel = require("./formaDePago");
+const UsuariosModel = require("./usuarios");
 
 /*  *********************** FORMAS DE PAGO************************ */
 // formasDePago = [
@@ -17,40 +17,40 @@ const FormasDePagoModel = require("./formaDePago");
 console.log("Información de Formas de Pago cargada correctamente.");
 
 /*  ************************* USUARIOS *************************** */
-let admin = new Usuario(
-  "admin",
-  "admin",
-  null,
-  "admin@localhost",
-  "admin",
-  null,
-  null,
-  true
-);
-usuarios.push(admin);
+// let admin = new Usuario(
+//   "admin",
+//   "admin",
+//   null,
+//   "admin@localhost",
+//   "admin",
+//   null,
+//   null,
+//   true
+// );
+// usuarios.push(admin);
 
-if (process.env.NODE_ENV !== "production") {
-  let user1 = new Usuario(
-    "felipemoralesquerol",
-    "Felipe",
-    "Morales",
-    "felipe.morales.querol@gmail.com",
-    "felipe1234",
-    "221123456",
-    "Calle 506 #1617"
-  );
-  let user2 = new Usuario(
-    "juanperez",
-    "Juan",
-    "Perez",
-    "juanperez@gmail.com",
-    "juan1234"
-  );
+// if (process.env.NODE_ENV !== "production") {
+//   let user1 = new Usuario(
+//     "felipemoralesquerol",
+//     "Felipe",
+//     "Morales",
+//     "felipe.morales.querol@gmail.com",
+//     "felipe1234",
+//     "221123456",
+//     "Calle 506 #1617"
+//   );
+//   let user2 = new Usuario(
+//     "juanperez",
+//     "Juan",
+//     "Perez",
+//     "juanperez@gmail.com",
+//     "juan1234"
+//   );
 
-  usuarios.push(user1);
-  usuarios.push(user2);
-}
-console.log("Información de Usuarios cargada correctamente.", usuarios);
+//   usuarios.push(user1);
+//   usuarios.push(user2);
+// }
+// console.log("Información de Usuarios cargada correctamente.", usuarios);
 
 /*  ************************* PRODUCTOS *************************** */
 // if (process.env.NODE_ENV !== "production") {
@@ -111,10 +111,8 @@ console.log("Información de Usuarios cargada correctamente.", usuarios);
 //console.log('Información de pedidos cargada correctamente.', pedidos)
 
 module.exports = {
-  usuarios,
-  Usuario,
-  productos,
-  Producto,
+  UsuariosModel,
+  ProductosModel,
   PedidosModel,
   FormasDePagoModel,
 };

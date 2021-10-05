@@ -1,4 +1,4 @@
-const httpError = require("./../helpers/httpError");
+const httpError = require("./../helpers/httpMessage");
 const formasDePago = require("../models/formaDePago");
 
 exports.list = async function list(req, res, next) {

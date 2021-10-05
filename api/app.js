@@ -78,7 +78,7 @@ const router = Router();
 
 app.use(express.json());
 app.use(helmet());
-app.use(morgan("dev"));
+app.use(morgan("common"));
 
 const program = require("./routes/program.js");
 app.use("/", program);

@@ -12,6 +12,7 @@ Adaptaciones para soporte de Sprint Project N. 2
 
 #### Módulos de Node.Js utilizados:
 
+- "bcrypt": "^5.0.1"
 - "express": "^4.17.1"
 - "helmet": "^4.6.0"
 - "jsonwebtoken": "^8.5.1"
