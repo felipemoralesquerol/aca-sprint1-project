@@ -87,7 +87,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"email\": \"juangomez@gmail.com\",\n  \"password\": 1234\n}",
+					"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"pass1234\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -141,7 +141,7 @@
 			"response": []
 		},
 		{
-			"name": "/usuarios/api",
+			"name": "/api/usuarios",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -193,7 +193,7 @@
 			"response": []
 		},
 		{
-			"name": "/pedidos/api",
+			"name": "/api/pedidos",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -204,7 +204,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:5000/api/productos",
+					"raw": "http://localhost:5000/api/pedidos",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -212,14 +212,49 @@
 					"port": "5000",
 					"path": [
 						"api",
-						"productos"
+						"pedidos"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "/formasDePago/api",
+			"name": "/api/pedidos",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"direccion\": \"A confirmar\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/pedidos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"pedidos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/formasDePago",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -229,6 +264,41 @@
 						"value": "Bearer {{token}}"
 					}
 				],
+				"url": {
+					"raw": "http://localhost:5000/api/formasDePago",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"formasDePago"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/formasDePago",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"codigo\": \"N2\",\n        \"nombre\": \"Nueva forma de Pago 2\"\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "http://localhost:5000/api/formasDePago",
 					"protocol": "http",
