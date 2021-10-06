@@ -1,4 +1,4 @@
-const httpError = require("./../helpers/httpMessage");
+const httpMessage = require("./../helpers/httpMessage");
 const formasDePago = require("../models/formaDePago");
 
 exports.list = async function list(req, res, next) {
@@ -7,7 +7,7 @@ exports.list = async function list(req, res, next) {
     console.log(data);
     res.json({ usuarios: data });
   } catch (error) {
-    httpError(req, res, error);
+    httpMessage.Error(req, res, error);
   }
 };
 
@@ -20,6 +20,32 @@ exports.agregar = async function list(req, res, next) {
     console.log(data);
     res.json({ status: data });
   } catch (error) {
-    httpError(req, res, error);
+    httpMessage.Error(req, res, error);
+  }
+};
+
+exports.borrar = async function list(req, res, next) {
+  try {
+    let { codigo } = req.body;
+    const info = { codigo };
+
+    const data = await formasDePago.findOne({ where: info });
+    if (data.borrado) {
+      texto = "Dato borrado anteriomente: " + codigo + " - " + data.nombre;
+      console.log(texto);
+      res.json({ status: texto });
+    } else {
+      data.borrado = true;
+      await data.save();
+      res.json({
+        status:
+          "Forma de pago borrada correctamente: " +
+          codigo +
+          " - " +
+          data.nombre,
+      });
+    }
+  } catch (error) {
+    httpMessage.Error(req, res, error);
   }
 };
