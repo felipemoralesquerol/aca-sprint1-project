@@ -49,3 +49,29 @@ exports.borrar = async function list(req, res, next) {
     httpMessage.Error(req, res, error);
   }
 };
+
+exports.actualizar = async function list(req, res, next) {
+  try {
+    let { codigo, nombre } = req.body;
+    const info = { codigo, nombre };
+
+    const data = await formasDePago.findOne({ where: codigo });
+    if (data.borrado) {
+      texto = "Dato borrado anteriomente: " + codigo + " - " + data.nombre;
+      console.log(texto);
+      res.json({ status: texto });
+    } else {
+      data.nombre = nombre;
+      await data.save();
+      res.json({
+        status:
+          "Forma de pago actualizada correctamente: " +
+          codigo +
+          " - " +
+          data.nombre,
+      });
+    }
+  } catch (error) {
+    httpMessage.Error(req, res, error);
+  }
+};

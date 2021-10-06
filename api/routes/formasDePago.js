@@ -85,3 +85,12 @@ router.delete(
   formasDePagoController.borrar
 );
 module.exports = router;
+
+router.update(
+  "/api/formasDePago",
+  authController.authenticated,
+  authController.isAdmin,
+  formasDePagoController.actualizar
+);
+
+module.exports = router;
