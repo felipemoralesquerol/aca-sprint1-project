@@ -11,8 +11,15 @@ module.exports = {
     // TODO: Enviar email
     // TODO: Enlazar error con tracking tool
     // TODO:
-    console.error("Error interno: " + err.message);
-    res.status(500).send({ status: "Error interno." });
+
+    if (err.message.includes("Validation error")) {
+      auxError = "Error interno: " + err.message;
+      console.error("Error interno: " + err.message);
+      res.status(409).send({ status: auxError }); //Conflicto
+    } else {
+      console.error("Error interno: " + err.message);
+      res.status(500).send({ status: "Error interno." });
+    }
   },
 
   Denied(req, res, err) {
@@ -39,5 +46,13 @@ module.exports = {
     // TODO: Internacionalizar (i18n)
     console.error("Dato no encontrado : " + message);
     res.status(404).send({ status: message });
+  },
+
+  DuplicateData(message, res) {
+    // TODO: Enviar emails
+    // TODO: Volcar esta información en un archivo de log
+    // TODO: Internacionalizar (i18n)
+    console.error("Dato duplicado : " + message);
+    res.status(409).send({ status: message });
   },
 };

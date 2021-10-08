@@ -158,4 +158,6 @@ router.post("/api/auth/signup", Controller.signup);
 
 //router.get('/api/me', Controller.authenticated, Controller.me)
 
+router.get("/api/auth/me", Controller.authenticated, Controller.me);
+
 module.exports = router;

@@ -12,19 +12,23 @@ Adaptaciones para soporte de Sprint Project N. 2
 
 #### Módulos de Node.Js utilizados:
 
-- "bcrypt": "^5.0.1"
-- "express": "^4.17.1"
-- "helmet": "^4.6.0"
-- "jsonwebtoken": "^8.5.1"
-- "morgan": "^1.10.0"
-- "nodemon": "^2.0.13"
-- "require-from-url": "^3.1.3"
-- "swagger-jsdoc": "^6.1.0"
+- "bcrypt": "^5.0.1",
+- "chai": "^4.3.4",
+- "dotenv": "^10.0.0",
+- "express": "^4.17.1",
+- "express-validator": "^6.12.2",
+- "helmet": "^4.6.0",
+- "jsonwebtoken": "^8.5.1",
+- "mocha": "^9.1.2",
+- "mongoose": "^6.0.8",
+- "morgan": "^1.10.0",
+- "mysql2": "^2.3.0",
+- "node-fetch": "^2.6.3",
+- "nodemon": "^2.0.13",
+- "require-from-url": "^3.1.3",
+- "sequelize": "^6.6.5",
+- "swagger-jsdoc": "^6.1.0",
 - "swagger-ui-express": "^4.1.6"
-- "dotenv": "^10.0.0""
-- "mongoose": "^6.0.8"
-- "mysql2": "^2.3.0"
-- "sequelize": "^6.6.5"
 
 #### Instrucciones de instalación:
 

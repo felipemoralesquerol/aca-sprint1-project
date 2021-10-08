@@ -42,25 +42,31 @@ exports.signin = async function signin(req, res, next) {
 };
 
 // Registro
-exports.signup = function signup(req, res, next) {
+exports.signup = async function signup(req, res, next) {
   try {
     // TODO: Implementar acceso a base de datos
     const { username, password, email } = req.body;
     console.log("signup", username, password, email);
 
-    jwt.sign(
-      req.body,
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: process.env.JWT_EXPIRES_IN },
-      (err, token) => {
-        if (err) {
-          httpError(req, res, err);
-        } else {
-          req.token = token;
-          res.json({ status: "signup", token });
+    const usuario = await UsuariosModel.findOne({ where: { email: email } });
+
+    if (usuario) {
+      DuplicateData.DuplicateData("Email ya registrado!", res);
+    } else {
+      jwt.sign(
+        req.body,
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: process.env.JWT_EXPIRES_IN },
+        (err, token) => {
+          if (err) {
+            httpMessage.Error(req, res, err);
+          } else {
+            req.token = token;
+            res.json({ status: "signup", token });
+          }
         }
-      }
-    );
+      );
+    }
   } catch (err) {
     httpMessage.Error(req, res, err);
   }
@@ -72,7 +78,7 @@ exports.authenticated = function authenticated(req, res, next) {
   //       Bearer {token}, donde este token haya sido suministrado por signin o signup
   try {
     if (!req.headers.authorization) {
-      httpDenied(
+      httpMessage.Denied(
         req,
         res,
         "Acceso denegado por falta de información de autorización"
@@ -81,7 +87,7 @@ exports.authenticated = function authenticated(req, res, next) {
       const token = req.headers.authorization.split(" ")[1];
       jwt.verify(token, process.env.JWT_SECRET_KEY, (err, authData) => {
         if (err) {
-          httpDenied(req, res, "Acceso denegado: " + err.message);
+          httpMessage.Denied(req, res, "Acceso denegado: " + err.message);
         } else {
           req.authData = authData;
           //TODO: Recuperar data del usuario

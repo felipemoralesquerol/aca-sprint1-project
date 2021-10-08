@@ -24,16 +24,16 @@ exports.agregar = async function list(req, res, next) {
   }
 };
 
-exports.borrar = async function list(req, res, next) {
+exports.borrar = async function borrar(req, res, next) {
   try {
-    let { codigo } = req.body;
+    let { codigo } = req.params;
     const info = { codigo };
 
     const data = await formasDePago.findOne({ where: info });
     if (data.borrado) {
       texto = "Dato borrado anteriomente: " + codigo + " - " + data.nombre;
       console.log(texto);
-      res.json({ status: texto });
+      res.status(410).json({ status: texto }); // contenido borrado
     } else {
       data.borrado = true;
       await data.save();
@@ -50,16 +50,20 @@ exports.borrar = async function list(req, res, next) {
   }
 };
 
-exports.actualizar = async function list(req, res, next) {
+exports.actualizar = async function actualizar(req, res, next) {
   try {
     let { codigo, nombre } = req.body;
     const info = { codigo, nombre };
 
-    const data = await formasDePago.findOne({ where: codigo });
+    const data = await formasDePago.findOne({ where: { codigo: codigo } });
     if (data.borrado) {
-      texto = "Dato borrado anteriomente: " + codigo + " - " + data.nombre;
+      texto =
+        "No se puede modificar porque esta borrado: " +
+        codigo +
+        " - " +
+        data.nombre;
       console.log(texto);
-      res.json({ status: texto });
+      res.status(410).json({ status: texto }); // contenido borrado
     } else {
       data.nombre = nombre;
       await data.save();

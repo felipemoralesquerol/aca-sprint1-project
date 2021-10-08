@@ -79,14 +79,14 @@ router.post(
 );
 
 router.delete(
-  "/api/formasDePago",
+  "/api/formasDePago/:codigo",
   authController.authenticated,
   authController.isAdmin,
   formasDePagoController.borrar
 );
 module.exports = router;
 
-router.update(
+router.put(
   "/api/formasDePago",
   authController.authenticated,
   authController.isAdmin,

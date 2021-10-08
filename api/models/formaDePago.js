@@ -12,7 +12,16 @@ FormasDePagoModel.init(
     },
     nombre: {
       type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: {
+          args: [3, 250],
+          msg: "El nombre de la forma de pago de tener entre 3 y 250 caracteres",
+        },
+        isAlpha: true,
+      },
     },
+
     borrado: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
