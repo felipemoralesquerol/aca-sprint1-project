@@ -17,7 +17,7 @@ describe("Probando API Auth", () => {
       .then((json) => {
         //console.log(json)
         assert.deepEqual(json, {
-          status: "Access denied o credenciales incorrectas.",
+          status: "Acceso denegado o credenciales incorrectas.",
         });
       });
   });

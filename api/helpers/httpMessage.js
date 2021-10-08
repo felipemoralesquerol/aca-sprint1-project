@@ -29,15 +29,15 @@ module.exports = {
     console.error(err);
     res
       .status(403)
-      .send({ status: "Access denied o credenciales incorrectas." });
+      .send({ status: "Acceso denegado o credenciales incorrectas." });
   },
 
   NotAccess(req, res) {
     // TODO: Enviar emails
     // TODO: Volcar esta información en un archivo de log
     // TODO: Internacionalizar (i18n)
-    console.error("Access denied or unauthorized.");
-    res.status(401).send({ status: "Access denied or unauthorized." });
+    console.error("Acceso denegado o no autorizado.");
+    res.status(401).send({ status: "Acceso denegado o no autorizado." });
   },
 
   NotFound(message, res) {
