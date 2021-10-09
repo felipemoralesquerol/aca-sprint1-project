@@ -1,7 +1,7 @@
 const express = require("express");
 let router = express.Router();
 
-const ProductosModel = require("../models/productos");
+const productoController = require("../controllers/productoController");
 const authController = require("../controllers/authController");
 
 /**
@@ -26,16 +26,7 @@ const authController = require("../controllers/authController");
 router.get(
   "/api/productos",
   authController.authenticated,
-  async function (req, res) {
-    try {
-      const productos = await ProductosModel.findAll();
-      console.log(productos);
-      res.send(productos);
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({ status: "Error interno" });
-    }
-  }
+  productoController.get
 );
 
 /**
@@ -98,12 +89,7 @@ router.post(
   "/api/productos",
   authController.authenticated,
   authController.isAdmin,
-  function (req, res) {
-    let producto = req.body;
-    console.log(producto);
-    productos.push(producto);
-    res.send(producto);
-  }
+  productoController.post
 );
 
 /**
@@ -174,27 +160,10 @@ router.post(
  *
  */
 router.put(
-  "/api/productos/:codeProducto",
+  "/api/productos/:codigo",
   authController.authenticated,
   authController.isAdmin,
-  function (req, res) {
-    let productoActualizado = req.body;
-    console.log(productoActualizado);
-    let index = productos.findIndex(
-      (elemento) =>
-        elemento.codigo == productoActualizado.codigo &&
-        elemento.codigo == req.params.codeProducto
-    );
-    if (index === -1) {
-      return res
-        .status(404)
-        .send({ resultado: "Producto no encontrado o código incorrecto" });
-    }
-    productos[index] = productoActualizado;
-    res.send({
-      resultado: "Producto actualizado: " + productoActualizado.codigo,
-    });
-  }
+  productoController.put
 );
 
 /**
@@ -227,26 +196,10 @@ router.put(
  */
 
 router.delete(
-  "/api/productos/:codeProducto",
+  "/api/productos/:codigo",
   authController.authenticated,
   authController.isAdmin,
-  function (req, res) {
-    //TODO: Modularizar
-    let codeABorrar = req.params.codeProducto;
-    // Recuperación de datos del producto a borrar
-    productoABorrar = productos.find(
-      (elemento) => elemento.codigo == codeABorrar
-    );
-    console.log(productoABorrar);
-    if (!productoABorrar) {
-      return res
-        .status(404)
-        .json({ resultado: `Producto a borrar no encontrado` });
-    }
-    resultado = "Borrado según el indice: " + productoABorrar;
-    productoABorrar.borrado = true;
-    return res.json({ resultado: resultado, valor: productoABorrar });
-  }
+  productoController.delete
 );
 
 module.exports = router;

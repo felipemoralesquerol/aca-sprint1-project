@@ -1,8 +1,8 @@
 const httpMessage = require("./../helpers/httpMessage");
-const formasDePago = require("../models/formaDePago");
+const productos = require("../models/productos");
 
 const cache = require("../../config/cache");
-const itemCache = "formasDePago";
+const itemCache = "producto";
 
 exports.get = async (req, res, next) => {
   try {
@@ -12,9 +12,9 @@ exports.get = async (req, res, next) => {
       }
       if (info) {
         //console.log(info);
-        res.json({ formasDePago: JSON.parse(info) });
+        res.json({ productos: JSON.parse(info) });
       } else {
-        const data = await formasDePago.findAll();
+        const data = await productos.findAll();
         //console.log(data);
 
         // Agregado de clave en redis
@@ -31,9 +31,9 @@ exports.get = async (req, res, next) => {
 
 exports.post = async (req, res, next) => {
   try {
-    // TODO: Sanetizar y validar
+    // TODO: Sanetizar y validar body
 
-    const data = await formasDePago.create(req.body);
+    const data = await productos.create(req.body);
     console.log(data);
 
     //Borrado de clave para que se recargue en nueva operacion que lo necesite
@@ -50,7 +50,7 @@ exports.delete = async (req, res, next) => {
     let { codigo } = req.params;
     const info = { codigo };
 
-    const data = await formasDePago.findOne({ where: info });
+    const data = await productos.findOne({ where: info });
     if (data.borrado) {
       texto = "Dato borrado anteriomente: " + codigo + " - " + data.nombre;
       console.log(texto);
@@ -64,10 +64,7 @@ exports.delete = async (req, res, next) => {
 
       res.json({
         status:
-          "Forma de pago borrada correctamente: " +
-          codigo +
-          " - " +
-          data.nombre,
+          "Procucto borrado correctamente: " + codigo + " - " + data.nombre,
       });
     }
   } catch (error) {
@@ -77,10 +74,11 @@ exports.delete = async (req, res, next) => {
 
 exports.put = async (req, res, next) => {
   try {
-    let { codigo, nombre } = req.body;
+    const codigo = req.params.codigo;
+    let { nombre, descripcion, precioVenta, foto } = req.body;
     const info = { codigo, nombre };
 
-    const data = await formasDePago.findOne({ where: { codigo: codigo } });
+    const data = await productos.findOne({ where: { codigo: codigo } });
     if (data.borrado) {
       texto =
         "No se puede modificar porque esta borrado: " +
@@ -91,6 +89,9 @@ exports.put = async (req, res, next) => {
       res.status(410).json({ status: texto }); // contenido borrado
     } else {
       data.nombre = nombre;
+      data.descripcion = descripcion;
+      data.precioVenta = precioVenta;
+      data.foto = foto;
       await data.save();
 
       //Borrado de clave para que se recargue en nueva operacion que lo necesite
@@ -98,10 +99,7 @@ exports.put = async (req, res, next) => {
 
       res.json({
         status:
-          "Forma de pago actualizada correctamente: " +
-          codigo +
-          " - " +
-          data.nombre,
+          "Producto actualizado correctamente: " + codigo + " - " + data.nombre,
       });
     }
   } catch (error) {

@@ -9,32 +9,47 @@ exports.signin = async function signin(req, res, next) {
   try {
     const { email, password } = req.body;
     console.log("signin", email, password);
-    const usuario = await UsuariosModel.findOne({ where: { email: email } });
+
+    // TODO: Sanitizar y validar la información ingresada
+
+    const usuario = await UsuariosModel.findOne({
+      where: { email: email, borrado: false },
+    });
 
     if (!usuario) {
       httpMessage.NotFound("Credenciales incorrectas", res);
-    } else {
-      const compare = passwordManager.comparePassword(
-        password,
-        usuario.password
-      );
-      if (compare) {
-        const data = jwt.sign(
-          req.body,
-          process.env.JWT_SECRET_KEY,
-          { expiresIn: process.env.JWT_EXPIRES_IN },
-          (err, token) => {
-            if (err) {
-              httpMessage.Error(req, res, err);
-            } else {
-              req.token = token;
-              res.json({ status: "signin", token });
-            }
+      return;
+    }
+
+    if (usuario.suspendido) {
+      httpMessage.NotFound("Usuario suspendido", res);
+      return;
+    }
+
+    // Armado de payload
+    let payload = {
+      email: usuario.email,
+      username: usuario.username,
+      admin: usuario.admin,
+    };
+
+    const compare = passwordManager.comparePassword(password, usuario.password);
+    if (compare) {
+      const data = jwt.sign(
+        payload,
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: process.env.JWT_EXPIRES_IN },
+        (err, token) => {
+          if (err) {
+            httpMessage.Error(req, res, err);
+          } else {
+            req.token = token;
+            res.json({ status: "signin", token });
           }
-        );
-      } else {
-        httpMessage.NotAccess(req, res);
-      }
+        }
+      );
+    } else {
+      httpMessage.NotAccess(req, res);
     }
   } catch (err) {
     httpMessage.Error(req, res, err);
@@ -44,29 +59,41 @@ exports.signin = async function signin(req, res, next) {
 // Registro
 exports.signup = async function signup(req, res, next) {
   try {
-    // TODO: Implementar acceso a base de datos
+    // TODO: Sanetizar y validar la entrada
     const { username, password, email } = req.body;
     console.log("signup", username, password, email);
 
-    const usuario = await UsuariosModel.findOne({ where: { email: email } });
+    let usuario = await UsuariosModel.findOne({ where: { email: email } });
 
     if (usuario) {
       DuplicateData.DuplicateData("Email ya registrado!", res);
-    } else {
-      jwt.sign(
-        req.body,
-        process.env.JWT_SECRET_KEY,
-        { expiresIn: process.env.JWT_EXPIRES_IN },
-        (err, token) => {
-          if (err) {
-            httpMessage.Error(req, res, err);
-          } else {
-            req.token = token;
-            res.json({ status: "signup", token });
-          }
-        }
-      );
+      return;
     }
+
+    req.body.password = passwordManager.encrypt(req.body.password);
+
+    usuario = await UsuariosModel.create(string(req.body));
+
+    // Armado de payload
+    let payload = {
+      email: usuario.email,
+      username: usuario.username,
+      admin: usuario.admin,
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: process.env.JWT_EXPIRES_IN },
+      (err, token) => {
+        if (err) {
+          httpMessage.Error(req, res, err);
+        } else {
+          req.token = token;
+          res.json({ status: "signup", token });
+        }
+      }
+    );
   } catch (err) {
     httpMessage.Error(req, res, err);
   }
@@ -91,6 +118,7 @@ exports.authenticated = function authenticated(req, res, next) {
         } else {
           req.authData = authData;
           //TODO: Recuperar data del usuario
+          console.log(req.authData);
 
           next();
         }
@@ -102,10 +130,8 @@ exports.authenticated = function authenticated(req, res, next) {
 };
 
 // Usuario es admin
-exports.isAdmin = function me(req, res, next) {
-  if (true) {
-    //TODO: Validar cuando se recuperen los datos de la database
-    //if (req.authData.username == "admin") {
+exports.isAdmin = (req, res, next) => {
+  if (req.authData.admin) {
     next();
   } else {
     console.error("Acceso denegado: ");
@@ -114,6 +140,11 @@ exports.isAdmin = function me(req, res, next) {
 };
 
 // Perfil de usuario
-exports.me = function me(req, res, next) {
+exports.me = (req, res, next) => {
   res.json({ status: "me", data: req.authData });
+};
+
+// Ususuario suspendido
+exports.suspender = (req, res, next) => {
+  res.status(500).json({ status: "Opción no implementada aún!" });
 };

@@ -60,6 +60,10 @@ UsuariosModel.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    suspendido: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     sequelize,

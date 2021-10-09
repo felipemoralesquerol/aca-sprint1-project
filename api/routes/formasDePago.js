@@ -28,7 +28,7 @@ const formasDePagoController = require("../controllers/formasDePagoController");
 router.get(
   "/api/formasDePago",
   authController.authenticated,
-  formasDePagoController.list
+  formasDePagoController.get
 );
 
 /**
@@ -75,22 +75,22 @@ router.post(
   "/api/formasDePago",
   authController.authenticated,
   authController.isAdmin,
-  formasDePagoController.agregar
+  formasDePagoController.post
 );
 
 router.delete(
   "/api/formasDePago/:codigo",
   authController.authenticated,
   authController.isAdmin,
-  formasDePagoController.borrar
+  formasDePagoController.delete
 );
 module.exports = router;
 
 router.put(
-  "/api/formasDePago",
+  "/api/formasDePago/:codigo",
   authController.authenticated,
   authController.isAdmin,
-  formasDePagoController.actualizar
+  formasDePagoController.put
 );
 
 module.exports = router;
