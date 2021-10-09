@@ -3,7 +3,7 @@ const usuarios = require("../models/usuarios");
 
 exports.list = async function list(req, res, next) {
   try {
-    const data = await pedidos.findAll();
+    const data = await usuarios.findAll();
     console.log(data);
     res.json({ usuarios: data });
   } catch (error) {

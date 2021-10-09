@@ -55,7 +55,7 @@ describe("Probando API Auth", () => {
     //console.log(json)
     assert.deepEqual(json.status, "me", 'Se espera status: "me"');
     assert.exists(json.data, "Se espera la clave data en la respuesta");
-    assert.deepEqual(json.data.usuario, "admin", "Se espera el usuario admin");
+    assert.deepEqual(json.data.username, "admin", "Se espera el usuario admin");
     assert.deepEqual(
       json.data.email,
       "admin@example.com",

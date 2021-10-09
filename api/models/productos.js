@@ -71,6 +71,21 @@ async function agregarDefaultData() {
         stock: 50,
       },
     });
+
+    // Agregado masivo para pruebas de
+    try {
+      for (let index = 0; index < 1000; index++) {
+        dato = await ProductosModel.findOrCreate({
+          where: {
+            codigo: "PT" + index,
+            nombre: "Producto de prueba " + index,
+            descripcion: "Producto de prueba",
+            precioVenta: 15 * index,
+            stock: index,
+          },
+        });
+      }
+    } catch (error) {}
   } catch (error) {
     console.log(error);
   }
