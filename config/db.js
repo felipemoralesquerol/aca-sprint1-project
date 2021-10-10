@@ -13,7 +13,7 @@ const sequelize = new Sequelize(
 async function authenticate() {
   try {
     await sequelize.authenticate();
-    //await sequelize.sync({ force: process.env.DB_FORCE });
+    await sequelize.sync({ force: process.env.DB_FORCE });
     console.log("Conexión a la base de datos satisfactoriamente.");
   } catch (error) {
     console.error(

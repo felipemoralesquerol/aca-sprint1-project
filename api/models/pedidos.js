@@ -98,6 +98,7 @@ PedidosModel.init(
     modelName: "pedidos",
     createdAt: "createTimestamp",
     updatedAt: "updateTimestamp",
+    underscored: true,
   }
 );
 

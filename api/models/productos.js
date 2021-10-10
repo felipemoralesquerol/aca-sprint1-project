@@ -35,6 +35,7 @@ ProductosModel.init(
     modelName: "productos",
     createdAt: "createTimestamp",
     updatedAt: "updateTimestamp",
+    underscored: true,
   }
 );
 

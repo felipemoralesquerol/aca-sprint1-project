@@ -32,6 +32,7 @@ FormasDePagoModel.init(
     modelName: "formas_de_pago",
     createdAt: "createTimestamp",
     updatedAt: "updateTimestamp",
+    underscored: true,
   }
 );
 

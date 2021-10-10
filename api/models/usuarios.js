@@ -70,6 +70,7 @@ UsuariosModel.init(
     modelName: "usuarios",
     createdAt: "createTimestamp",
     updatedAt: "updateTimestamp",
+    underscored: true,
   }
 );
 

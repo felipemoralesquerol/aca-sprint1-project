@@ -26,7 +26,7 @@ const pedidoController = require("../controllers/pedidoController");
  *       200:
  *         description: Listado de usuarios
  */
-router.get("/api/pedidos", authController.authenticated, pedidoController.list);
+router.get("/api/pedidos", authController.authenticated, pedidoController.get);
 
 /**
  * @swagger
@@ -71,7 +71,7 @@ router.get("/api/pedidos", authController.authenticated, pedidoController.list);
 router.post(
   "/api/pedidos",
   authController.authenticated,
-  pedidoController.agregar
+  pedidoController.post
 );
 
 /**

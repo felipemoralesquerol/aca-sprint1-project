@@ -1,8 +1,9 @@
 const httpMessage = require("./../helpers/httpMessage");
 const pedidos = require("../models/pedidos");
 
-exports.list = async function list(req, res, next) {
+exports.get = async (req, res, next) => {
   try {
+    //const filtro = req.authData.admin? `{ where: {}}`
     //(p) => req.authData.admin || p.usuario == req.authData.username
     const data = await pedidos.findAll();
     console.log(data);
@@ -13,7 +14,7 @@ exports.list = async function list(req, res, next) {
   }
 };
 
-exports.agregar = async function list(req, res, next) {
+exports.post = async (req, res, next) => {
   try {
     let { direccion } = req.body.direccion;
     //     usuario = req.usuario;

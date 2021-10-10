@@ -6,6 +6,8 @@ const PedidosModel = require("./pedidos");
 const FormasDePagoModel = require("./formaDePago");
 const UsuariosModel = require("./usuarios");
 
+require("../models/associations/core");
+
 /*  *********************** FORMAS DE PAGO************************ */
 // formasDePago = [
 //   new FormasDePago("EF", "Efectivo"),

@@ -16,7 +16,7 @@ const swaggerOptions = {
     info: {
       title: "API Resto",
       version: "1.0.0",
-      description: "Sprint Project N. 1",
+      description: "Sprint Project N. 2",
     },
     components: {
       securitySchemes: {
