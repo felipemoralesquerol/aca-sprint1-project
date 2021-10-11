@@ -41,6 +41,7 @@ Adaptaciones para soporte de Sprint Project N. 2
 6. Configurar las variables de entorno del archivo .env a su configuración
 7. Chequear las dependencias utilizadas vía `npm-check`
 8. Arrancar el servidor ejecutando `npm run dev`
+9. Ejecución de test ejecutando `npm run test`
 
 #### Documentación de la aplicación con SWAGGER:
 
