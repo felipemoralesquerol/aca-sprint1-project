@@ -7,14 +7,21 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
-  }
+    logging: console.log,
+    logging: function (str) {
+        console.log(str);
+    }
+  },
+  
 );
 
 async function authenticate() {
   try {
     await sequelize.authenticate();
-    await sequelize.sync({ force: process.env.DB_FORCE });
+    await sequelize.sync({ force: true});
     console.log("Conexión a la base de datos satisfactoriamente.");
+    //const associations = require("./../api/models/associations/core");
+
   } catch (error) {
     console.error(
       "Se ha detectado un error al conectarse a la base de datos:",
@@ -25,4 +32,5 @@ async function authenticate() {
 
 authenticate();
 
+//const associations = require("./../api/models/associations/core");
 module.exports = sequelize;

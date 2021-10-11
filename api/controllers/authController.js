@@ -31,6 +31,7 @@ exports.signin = async function signin(req, res, next) {
       email: usuario.email,
       username: usuario.username,
       admin: usuario.admin,
+      usernameID : usuario.id
     };
 
     const compare = passwordManager.comparePassword(password, usuario.password);

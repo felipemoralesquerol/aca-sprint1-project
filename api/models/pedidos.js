@@ -82,6 +82,7 @@ PedidosModel.init(
     },
     estado: {
       type: DataTypes.STRING,
+      defaultValue: 'PEN',
       comments:
         "Pendiente => Confirmado => En preparación => Enviado => Entregado. PEN => CON => ENP => ENV => ENT",
     },
@@ -92,10 +93,18 @@ PedidosModel.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    // usuarioId: { 
+    //   type: DataTypes.BIGINT(11), 
+    //   field: 'usuarioId',
+    //   references: {
+    //     model: 'usuarios',
+    //     key: 'id'
+    //   },
+    // },
   },
   {
     sequelize,
-    modelName: "pedidos",
+    modelName: 'pedido',
     createdAt: "createTimestamp",
     updatedAt: "updateTimestamp",
     underscored: true,
@@ -105,7 +114,7 @@ PedidosModel.init(
 // TODO: Usar sequelize-cli
 async function agregarDefaultData() {
   try {
-    await PedidosModel.sync({ force: false });
+    //await PedidosModel.sync({ force: false });
     // let dato = await PedidosModel.findOrCreate({
     //   where: {
     //     codigo: "HB1",

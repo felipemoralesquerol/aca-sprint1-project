@@ -5,6 +5,9 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const db = require("../config/db");
 
+const associations = require("./models/associations/core");
+
+
 //Swagger
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUI = require("swagger-ui-express");
@@ -96,6 +99,8 @@ app.use(usuarioRoutes);
 app.use(productoRoutes);
 app.use(pedidoRoutes);
 app.use(formasDePagoRoutes);
+
+
 
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 // view in localhost:5000/api-docs

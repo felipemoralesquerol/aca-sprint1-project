@@ -1,23 +1,3 @@
-// let usuarios = [];
-
-// class Usuario {
-//     constructor(username, nombre, apellido, email, password, telefono, direccionEnvio, admin) {
-//         this.username = username;
-//         this.nombre = nombre;
-//         this.apellido = apellido;
-//         this.email = email;
-//         this.password = password;
-//         this.telefono = telefono;
-//         this.direccionEnvio = direccionEnvio;
-//         //Si no viene el parametro admin se asume falso (no administrador)
-//         this.admin = admin === undefined ? false : admin;
-//         this.borrado = false;
-//     }
-
-// }
-
-// module.exports = { usuarios, Usuario }
-
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../../config/db");
 const passwordManager = require("../helpers/passwordManager");
@@ -67,7 +47,7 @@ UsuariosModel.init(
   },
   {
     sequelize,
-    modelName: "usuarios",
+    modelName: 'usuario',
     createdAt: "createTimestamp",
     updatedAt: "updateTimestamp",
     underscored: true,
@@ -77,17 +57,17 @@ UsuariosModel.init(
 // TODO: Usar sequelize-cli
 async function agregarDefaultData() {
   try {
-    await UsuariosModel.sync({ force: false });
+    //await UsuariosModel.sync({ force: true });
 
-    let dato = await UsuariosModel.findOrCreate({
-      where: {
-        username: "admin",
-        nombre: "admin",
-        email: "admin@example.com",
-        admin: true,
-        password: passwordManager.encrypt("pass1234"),
-      },
-    });
+    // let dato = await UsuariosModel.findOrCreate({
+    //   where: {
+    //     username: "admin",
+    //     nombre: "admin",
+    //     email: "admin@example.com",
+    //     admin: true,
+    //     password: passwordManager.encrypt("pass1234"),
+    //   },
+    // });
   } catch (error) {
     console.log(error);
   }

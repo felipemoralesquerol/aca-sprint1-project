@@ -18,7 +18,7 @@ FormasDePagoModel.init(
           args: [3, 250],
           msg: "El nombre de la forma de pago de tener entre 3 y 250 caracteres",
         },
-        isAlpha: true,
+        //isAlpha: true,
       },
     },
 
@@ -29,7 +29,7 @@ FormasDePagoModel.init(
   },
   {
     sequelize,
-    modelName: "formas_de_pago",
+    modelName: 'formas_de_pago',
     createdAt: "createTimestamp",
     updatedAt: "updateTimestamp",
     underscored: true,
@@ -39,30 +39,31 @@ FormasDePagoModel.init(
 // TODO: Usar sequelize-cli
 async function agregarDefaultData() {
   try {
-    await FormasDePagoModel.sync({ force: false });
-    let dato = await FormasDePagoModel.findOrCreate({
-      where: { codigo: "EF", nombre: "Efectivo" },
-    });
+    //await FormasDePagoModel.sync({ force: true });
 
-    dato = await FormasDePagoModel.findOrCreate({
-      where: {
-        codigo: "TD",
-        nombre: "Tarjeta de Débito",
-      },
-    });
-    dato = await FormasDePagoModel.findOrCreate({
-      where: {
-        codigo: "TC",
-        nombre: "Tarjeta de Crédito",
-      },
-    });
+    // let dato = await FormasDePagoModel.findOrCreate({
+    //   where: { codigo: "EF", nombre: "Efectivo" },
+    // });
 
-    dato = await FormasDePagoModel.findOrCreate({
-      where: {
-        codigo: "MP",
-        nombre: "Mercado Pago",
-      },
-    });
+    // dato = await FormasDePagoModel.findOrCreate({
+    //   where: {
+    //     codigo: "TD",
+    //     nombre: "Tarjeta de Débito",
+    //   },
+    // });
+    // dato = await FormasDePagoModel.findOrCreate({
+    //   where: {
+    //     codigo: "TC",
+    //     nombre: "Tarjeta de Crédito",
+    //   },
+    // });
+
+    // dato = await FormasDePagoModel.findOrCreate({
+    //   where: {
+    //     codigo: "MP",
+    //     nombre: "Mercado Pago",
+    //   },
+    // });
   } catch (error) {
     console.log(error);
   }

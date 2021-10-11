@@ -1,6 +1,6 @@
 const express = require("express");
 let router = express.Router();
-const init = require("./../models/init");
+//const init = require("./../models/init");
 
 /**
  * @swagger

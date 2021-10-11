@@ -7,7 +7,7 @@ exports.get = async (req, res, next) => {
     //(p) => req.authData.admin || p.usuario == req.authData.username
     const data = await pedidos.findAll();
     console.log(data);
-    res.json({ usuarios: data });
+    res.json({ pedidos: data });
     //res.json(data);
   } catch (error) {
     httpMessage.Error(req, res, error);
@@ -33,11 +33,11 @@ exports.post = async (req, res, next) => {
     //     res.send(pedido);
     const cant = await pedidos.count();
 
-    const data = await pedidos.create({ numero: cant + 1, direccion });
+    const data = await pedidos.create({ numero: cant + 1, usuarioid: req.authData.usernameID, direccion });
     console.log(data);
     res.json({ status: data });
   } catch (error) {
-    hhttpMessage.Error(req, res, error);
+    httpMessage.Error(req, res, error);
   }
 };
 // exports.pedidos = function pedidos(req, res) {

@@ -1,10 +1,11 @@
 //console.log('Información de Ambiente: ' + process.env.NODE_ENV);
 
 // carga de información adicional
-const ProductosModel = require("./productos");
-const PedidosModel = require("./pedidos");
-const FormasDePagoModel = require("./formaDePago");
-const UsuariosModel = require("./usuarios");
+//const UsuariosModel = require("./usuarios");
+//const ProductosModel = require("./productos");
+//const PedidosModel = require("./pedidos");
+//const FormasDePagoModel = require("./formaDePago");
+
 
 require("../models/associations/core");
 
@@ -16,7 +17,7 @@ require("../models/associations/core");
 //   new FormasDePago("MP", "MercadoPago"),
 // ];
 
-console.log("Información de Formas de Pago cargada correctamente.");
+//console.log("Información de Formas de Pago cargada correctamente.");
 
 /*  ************************* USUARIOS *************************** */
 // let admin = new Usuario(
@@ -112,9 +113,9 @@ console.log("Información de Formas de Pago cargada correctamente.");
 
 //console.log('Información de pedidos cargada correctamente.', pedidos)
 
-module.exports = {
-  UsuariosModel,
-  ProductosModel,
-  PedidosModel,
-  FormasDePagoModel,
-};
+// module.exports = {
+//   UsuariosModel,
+//   ProductosModel,
+//   PedidosModel,
+//   FormasDePagoModel,
+// };
