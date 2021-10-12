@@ -93,4 +93,12 @@ router.put(
   formasDePagoController.put
 );
 
+router.post(
+  "/api/formasDePago/data",
+  authController.authenticated,
+  authController.isAdmin,
+  formasDePagoController.agregarDefaultData
+);
+
+
 module.exports = router;

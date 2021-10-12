@@ -108,3 +108,37 @@ exports.put = async (req, res, next) => {
     httpMessage.Error(req, res, error);
   }
 };
+
+exports.agregarDefaultData = async (req, res, next) => {
+  try {
+    //await formasDePago.sync({ force: true });
+
+    let dato = await formasDePago.findOrCreate({
+      where: { codigo: "EF", nombre: "Efectivo" },
+    });
+
+    dato = await formasDePago.findOrCreate({
+      where: {
+        codigo: "TD",
+        nombre: "Tarjeta de Débito",
+      },
+    });
+    dato = await formasDePago.findOrCreate({
+      where: {
+        codigo: "TC",
+        nombre: "Tarjeta de Crédito",
+      },
+    });
+
+    dato = await formasDePago.findOrCreate({
+      where: {
+        codigo: "MP",
+        nombre: "Mercado Pago",
+      },
+    });
+
+    httpMessage.Message("Agregado de data OK", res)
+  } catch (error) {
+    httpMessage.Error(req, res, error);
+  }
+}

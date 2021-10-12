@@ -2,7 +2,7 @@ const PedidosModel = require("../pedidos");
 const UsuariosModel = require("../usuarios");
 const ProductosModel = require("../productos");
 const FormasDePagoModel = require("../formaDePago");
-//const sequelize = require("../../../config/db");
+const PedidosProductosModel = require("../pedidosProductos");
 
 console.log('Ejecución de asociaciones!')
 // Agregado de relaciones
@@ -12,22 +12,38 @@ console.log('Ejecución de asociaciones!')
 PedidosModel.belongsTo(UsuariosModel);
 UsuariosModel.hasMany(PedidosModel);
 
-// // Creación de nueva entidad de vinculo
-PedidosModel.belongsToMany(ProductosModel, {
-  through: "pedidos_productos",
-  foreignKey: "pedido_id", // replaces `productId`
-  otherKey: "producto_id", // replaces `categoryId`
-});
+// Asociación entre pedidos y formas de pago
+PedidosModel.belongsTo(FormasDePagoModel);
+FormasDePagoModel.hasMany(PedidosModel);
 
-try {
-  ProductosModel.belongsToMany(PedidosModel, {
-  through: "pedidos_productos",
-  foreignKey: "producto_id", // replaces `categoryId`
-  otherKey: "pedido_id", // replaces `productId`
-});
-} catch (error) {
-  console.log(error)
-}
+// Asociacion entre pedidos y pedidos_productos
+PedidosProductosModel.belongsTo(PedidosModel);
+PedidosModel.hasMany(PedidosProductosModel);
+
+// Asociacion entre productos y pedidos_productos
+PedidosProductosModel.belongsTo(ProductosModel);
+ProductosModel.hasMany(PedidosProductosModel);
+
+
+
+//  Creación de nueva entidad de vinculo (para el caso en el que la tabla no tiene atributos)
+// PedidosModel.belongsToMany(ProductosModel, {
+//   through: "pedidos_productos",
+//   foreignKey: "pedido_id", 
+//   otherKey: "producto_id", 
+// });
+
+// try {
+//   ProductosModel.belongsToMany(PedidosModel, {
+//   through: "pedidos_productos",
+//   foreignKey: "producto_id", 
+//   otherKey: "pedido_id", 
+// });
+// } catch (error) {
+//   console.log(error)
+// }
+
+
 
 
 console.log('Fin de asociaciones!' )

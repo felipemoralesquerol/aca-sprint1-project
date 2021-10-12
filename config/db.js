@@ -18,7 +18,7 @@ const sequelize = new Sequelize(
 async function authenticate() {
   try {
     await sequelize.authenticate();
-    await sequelize.sync({ force: true});
+    await sequelize.sync({ force: false});
     console.log("Conexión a la base de datos satisfactoriamente.");
     //const associations = require("./../api/models/associations/core");
 

@@ -54,25 +54,5 @@ UsuariosModel.init(
   }
 );
 
-// TODO: Usar sequelize-cli
-async function agregarDefaultData() {
-  try {
-    //await UsuariosModel.sync({ force: true });
-
-    // let dato = await UsuariosModel.findOrCreate({
-    //   where: {
-    //     username: "admin",
-    //     nombre: "admin",
-    //     email: "admin@example.com",
-    //     admin: true,
-    //     password: passwordManager.encrypt("pass1234"),
-    //   },
-    // });
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-agregarDefaultData();
 
 module.exports = UsuariosModel;

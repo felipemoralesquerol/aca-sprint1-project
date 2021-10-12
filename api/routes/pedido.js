@@ -246,39 +246,8 @@ router.get(
 router.post(
   "/api/pedidos/:id/producto/:codeProducto",
   authController.authenticated,
-  function (req, res) {
-    idPedido = req.params.id;
-    console.log(req.params, req.query.index, req.body);
-    pedidoUsuario = pedidos.find(
-      (p) =>
-        p.id == idPedido &&
-        (req.usuario.admin || p.usuario == req.usuario.username)
-    );
-    if (!pedidoUsuario) {
-      return res.status(404).send({ resultado: `Id Pedido no encontrado` });
-    }
-    //Requerimiento adicional (s). Los usuarios solo pueden agregar productos si el pedido está PEN
-    if (!req.usuario.admin && pedidoUsuario.estado != "PEN") {
-      return res.status(404).send({
-        resultado: `Un usuario solo puede agregar productos a pedidos en estado pendiente`,
-      });
-    }
-    codeProducto = req.body.codeProducto;
-    producto = productos.find((p) => p.codigo == codeProducto && !p.borrado);
-    if (!producto) {
-      return res
-        .status(404)
-        .send({ resultado: `Código de producto no encontrado o inhabilitado` });
-    }
-    console.log(codeProducto, producto);
-    pedidoUsuario.addProducto(producto);
-    console.log(pedidoUsuario);
-    res.send({
-      resultado:
-        "Producto agregado correctamente. El pedido sale: " +
-        pedidoUsuario.montoTotal,
-    });
-  }
+  pedidoController.postProducto
+  
 );
 
 /**

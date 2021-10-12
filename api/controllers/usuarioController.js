@@ -1,5 +1,7 @@
 const httpMessage = require("./../helpers/httpMessage");
 const usuarios = require("../models/usuarios");
+const passwordManager = require("./../helpers/passwordManager");
+
 
 exports.list = async function list(req, res, next) {
   try {
@@ -36,3 +38,24 @@ exports.borrado = function borrado(req, res) {
   //   res.send({ resultado: resultado, valor: usuarioABorrar });
   httpMessage.Message("usuarios.borrado: opción no implementada");
 };
+
+
+exports.agregarDefaultData = async (req, res, next) => {
+  try {
+    //await UsuariosModel.sync({ force: true });
+
+    let dato = await usuarios.findOrCreate({
+      where: {
+        username: "admin",
+        nombre: "admin",
+        email: "admin@example.com",
+        admin: true,
+        password: passwordManager.encrypt("pass1234"),
+      },
+    });
+
+    httpMessage.Message("Agregado de data OK", res)
+  } catch (error) {
+    httpMessage.Error(req, res, error);
+  }
+}

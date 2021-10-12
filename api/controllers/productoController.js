@@ -106,3 +106,58 @@ exports.put = async (req, res, next) => {
     httpMessage.Error(req, res, error);
   }
 };
+
+exports.agregarDefaultData = async (req, res, next) => {
+  try {
+    //await productos.sync({ force: true });
+
+    let dato = await productos.findOrCreate({
+      where: {
+        codigo: "HB1",
+        nombre: "Hamburguesa Clasic",
+        descripcion: "Hamburguesa clásico con JyQ",
+        precioVenta: "500",
+        stock: 100,
+      },
+    });
+
+    dato = await productos.findOrCreate({
+      where: {
+        codigo: "HB2",
+        nombre: "Hamburguesa Verde",
+        descripcion: "Hamburguesa en base a vegetales",
+        precioVenta: "450",
+        stock: 200,
+      },
+    });
+
+    dato = await productos.findOrCreate({
+      where: {
+        codigo: "EC",
+        nombre: "Ensalada Cesar",
+        descripcion: "Ensalada Cesar",
+        precioVenta: "350",
+        stock: 50,
+      },
+    });
+
+    // Agregado masivo para pruebas de productos.
+    try {
+      for (let index = 0; index < 1000; index++) {
+        dato = await productos.findOrCreate({
+          where: {
+            codigo: "PT" + index,
+            nombre: "Producto de prueba " + index,
+            descripcion: "Producto de prueba",
+            precioVenta: 15 * index,
+            stock: index,
+          },
+        });
+      }
+    } catch (error) {};
+
+    httpMessage.Message("Agregado de data OK", res)
+  } catch (error) {
+    httpMessage.Error(req, res, error);
+  }
+}

@@ -1,11 +1,17 @@
 const httpMessage = require("./../helpers/httpMessage");
 const pedidos = require("../models/pedidos");
+const pedidosProductos = require("../models/pedidosProductos")
+const productos = require("../models/productos");
+const usuarios = require("../models/usuarios");
+const { report } = require("../routes/program");
+
 
 exports.get = async (req, res, next) => {
   try {
-    //const filtro = req.authData.admin? `{ where: {}}`
-    //(p) => req.authData.admin || p.usuario == req.authData.username
-    const data = await pedidos.findAll();
+    const data = await pedidos.findAll({ where: {usuario_id : req.authData.usernameID},
+      include: [
+      {model: usuarios}
+    ]});
     console.log(data);
     res.json({ pedidos: data });
     //res.json(data);
@@ -17,29 +23,45 @@ exports.get = async (req, res, next) => {
 exports.post = async (req, res, next) => {
   try {
     let { direccion } = req.body.direccion;
-    //     usuario = req.usuario;
-    //     console.log(req.body);
-    //     if (!formaDePago in ["EF", "TC", "TD", "MP"]) {
-    //       return res
-    //         .status(404)
-    //         .send({ resultado: `Forma de pago incorrecta: ${formaDePago}` });
-    //     }
-    //     direccionEnvio = direccionEnvio || usuario.direccionEnvio;
-    //     pedido = new Pedido(usuario.username, formaDePago);
-    //     pedido.setDireccionEnvio(direccionEnvio);
-    //     //Agregado de pedido a la lista global de pedidos
-    //     addPedido(pedido);
-    //     console.log(pedidos);
-    //     res.send(pedido);
-    const cant = await pedidos.count();
 
-    const data = await pedidos.create({ numero: cant + 1, usuarioid: req.authData.usernameID, direccion });
-    console.log(data);
-    res.json({ status: data });
+    const cant = await pedidos.count();
+    const numeroPedido = cant + 1;
+
+    const dataPedido = await pedidos.create({ numero: numeroPedido, usuarioId: req.authData.usernameID, direccion });
+    console.log(dataPedido);
+
+    res.json({ status: dataPedido });
+
   } catch (error) {
     httpMessage.Error(req, res, error);
   }
 };
+
+
+
+exports.postProducto = async (req, res, next) => {
+  try {
+   
+    const numeroPedido = req.params.id;
+    const codeProducto = req.params.codeProducto
+    const cantidad = req.body.cantidad;
+
+    const dataPedido = await pedidos.findOne({ where :{ id:numeroPedido} });
+    console.log(dataPedido);
+
+    const dataProducto = await productos.findOne({ where: {codigo:codeProducto} });
+    console.log(dataProducto);
+   
+    const dataPedidoProducto = await pedidosProductos.create({ pedido_id: numeroPedido, producto_id: dataProducto.id, cantidad:cantidad});
+    console.log(dataPedidoProducto);
+
+    res.json({ status: dataPedido });
+  } catch (error) {
+    httpMessage.Error(req, res, error);
+  }
+};
+
+
 // exports.pedidos = function pedidos(req, res) {
 //   //TODO: Refactoring con /pedidos
 //   pedidosUsuario = pedidos.filter(

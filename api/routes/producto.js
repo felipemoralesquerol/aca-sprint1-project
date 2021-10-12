@@ -202,4 +202,13 @@ router.delete(
   productoController.delete
 );
 
+
+router.post(
+  "/api/productos/data",
+  authController.authenticated,
+  authController.isAdmin,
+  productoController.agregarDefaultData
+);
+
+
 module.exports = router;

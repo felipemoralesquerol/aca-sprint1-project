@@ -36,39 +36,4 @@ FormasDePagoModel.init(
   }
 );
 
-// TODO: Usar sequelize-cli
-async function agregarDefaultData() {
-  try {
-    //await FormasDePagoModel.sync({ force: true });
-
-    // let dato = await FormasDePagoModel.findOrCreate({
-    //   where: { codigo: "EF", nombre: "Efectivo" },
-    // });
-
-    // dato = await FormasDePagoModel.findOrCreate({
-    //   where: {
-    //     codigo: "TD",
-    //     nombre: "Tarjeta de Débito",
-    //   },
-    // });
-    // dato = await FormasDePagoModel.findOrCreate({
-    //   where: {
-    //     codigo: "TC",
-    //     nombre: "Tarjeta de Crédito",
-    //   },
-    // });
-
-    // dato = await FormasDePagoModel.findOrCreate({
-    //   where: {
-    //     codigo: "MP",
-    //     nombre: "Mercado Pago",
-    //   },
-    // });
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-agregarDefaultData();
-
 module.exports = FormasDePagoModel;

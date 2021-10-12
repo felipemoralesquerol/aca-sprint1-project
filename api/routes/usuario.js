@@ -119,4 +119,11 @@ router.delete(
   Controller.borrado
 );
 
+router.post(
+  "/api/usuarios/data",
+  //authController.authenticated,
+  //authController.isAdmin,
+  Controller.agregarDefaultData
+);
+
 module.exports = router;
