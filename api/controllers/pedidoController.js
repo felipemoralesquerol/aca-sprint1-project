@@ -11,8 +11,14 @@ exports.get = async (req, res, next) => {
   try {
     const data = await pedidos.findAll({ where: {usuario_id : req.authData.usernameID},
       include: [
-      {model: usuarios}, {model:formaDePago}
-    ]});
+      {model: usuarios,
+        attributes: ['id', 'username', 'email', 'nombre', 'apellido','direccion_envio']
+        }, {model:formaDePago,
+          attributes: ['id', 'codigo', 'nombre']
+        }
+    ],
+    attributes: ['id', 'fecha', 'direccion', 'estado', 'monto_total', 'anulado']
+  });
     console.log(data);
     res.json({ pedidos: data });
     //res.json(data);
