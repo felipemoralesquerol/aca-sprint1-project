@@ -3,6 +3,7 @@ const pedidos = require("../models/pedidos");
 const pedidosProductos = require("../models/pedidosProductos")
 const productos = require("../models/productos");
 const usuarios = require("../models/usuarios");
+const formaDePago = require("../models/formaDePago");
 const { report } = require("../routes/program");
 
 
@@ -10,7 +11,7 @@ exports.get = async (req, res, next) => {
   try {
     const data = await pedidos.findAll({ where: {usuario_id : req.authData.usernameID},
       include: [
-      {model: usuarios}
+      {model: usuarios}, {model:formaDePago}
     ]});
     console.log(data);
     res.json({ pedidos: data });
@@ -22,12 +23,18 @@ exports.get = async (req, res, next) => {
 
 exports.post = async (req, res, next) => {
   try {
-    let { direccion } = req.body.direccion;
+    const direccion = req.body.direccion;
+    const codeFormaDePago = req.body.formaDePago;
+
+    const dataFormaDePago = await formaDePago.findOne({ where: { codigo: codeFormaDePago}});
+    console.log(dataFormaDePago);
 
     const cant = await pedidos.count();
     const numeroPedido = cant + 1;
 
-    const dataPedido = await pedidos.create({ numero: numeroPedido, usuarioId: req.authData.usernameID, direccion });
+
+    const dataPedido = await pedidos.create({ numero: numeroPedido, usuarioId: req.authData.usernameID, direccion, 
+      formasDePagoId:dataFormaDePago.id });
     console.log(dataPedido);
 
     res.json({ status: dataPedido });
