@@ -55,7 +55,7 @@ router.get(
  *            - codigo
  *            - nombre
  *            - descripcion
- *            - precioVenta
+ *            - precio_venta
  *            - stock
  *          properties:
  *            codigo:
@@ -70,7 +70,7 @@ router.get(
  *              description: Descripcion del producto
  *              type: string
  *              example: Ensalada verde en base a vegetales
- *            precioVenta:
+ *            precio_venta:
  *              description: Precio de venta del producto
  *              type: float
  *              example: 100
@@ -125,7 +125,7 @@ router.post(
  *            - codigo
  *            - nombre
  *            - descripcion
- *            - precioVenta
+ *            - precio_venta
  *            - stock
  *          properties:
  *            codigo:
@@ -140,7 +140,7 @@ router.post(
  *              description: Descripcion del producto
  *              type: string
  *              example: Ensalada verde en base a vegetales
- *            precioVenta:
+ *            precio_venta:
  *              description: Precio de venta del producto
  *              type: float
  *              example: 100

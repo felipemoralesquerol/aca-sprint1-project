@@ -26,7 +26,7 @@ UsuariosModel.init(
     telefono: {
       type: DataTypes.STRING,
     },
-    direccionEnvio: {
+    direccion_envio: {
       type: DataTypes.STRING,
     },
     password: {

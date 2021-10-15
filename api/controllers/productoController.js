@@ -75,7 +75,7 @@ exports.delete = async (req, res, next) => {
 exports.put = async (req, res, next) => {
   try {
     const codigo = req.params.codigo;
-    let { nombre, descripcion, precioVenta, foto } = req.body;
+    let { nombre, descripcion, precio_venta, foto } = req.body;
     const info = { codigo, nombre };
 
     const data = await productos.findOne({ where: { codigo: codigo } });
@@ -90,7 +90,7 @@ exports.put = async (req, res, next) => {
     } else {
       data.nombre = nombre;
       data.descripcion = descripcion;
-      data.precioVenta = precioVenta;
+      data.precio_venta = precio_venta;
       data.foto = foto;
       await data.save();
 
@@ -116,7 +116,7 @@ exports.agregarDefaultData = async (req, res, next) => {
         codigo: "HB1",
         nombre: "Hamburguesa Clasic",
         descripcion: "Hamburguesa clásico con JyQ",
-        precioVenta: "500",
+        precio_venta: "500",
         stock: 100,
       },
     });
@@ -126,7 +126,7 @@ exports.agregarDefaultData = async (req, res, next) => {
         codigo: "HB2",
         nombre: "Hamburguesa Verde",
         descripcion: "Hamburguesa en base a vegetales",
-        precioVenta: "450",
+        precio_venta: "450",
         stock: 200,
       },
     });
@@ -136,7 +136,7 @@ exports.agregarDefaultData = async (req, res, next) => {
         codigo: "EC",
         nombre: "Ensalada Cesar",
         descripcion: "Ensalada Cesar",
-        precioVenta: "350",
+        precio_venta: "350",
         stock: 50,
       },
     });
@@ -149,7 +149,7 @@ exports.agregarDefaultData = async (req, res, next) => {
             codigo: "PT" + index,
             nombre: "Producto de prueba " + index,
             descripcion: "Producto de prueba",
-            precioVenta: 15 * index,
+            precio_venta: 15 * index,
             stock: index,
           },
         });

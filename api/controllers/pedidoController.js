@@ -61,10 +61,23 @@ exports.postProducto = async (req, res, next) => {
 
     const dataPedido = await pedidos.findOne({ where :{ id:numeroPedido} });
     console.log(dataPedido);
+    if (!dataPedido) {
+      httpMessage.NotFound(`Pedido no encontrado` ,res);
+      return
+    }
 
     const dataProducto = await productos.findOne({ where: {codigo:codeProducto} });
     console.log(dataProducto);
+    if (!dataProducto) {
+      httpMessage.NotFound(`Producto no encontrado` ,res);
+      return
+    }
    
+    // Actualización de cabecera de pedidos
+    dataPedido.monto_total = parseFloat(dataPedido.monto_total) + parseFloat(dataProducto.precio_venta) * parseInt(cantidad);
+    dataPedido.save();
+
+
     const dataPedidoProducto = await pedidosProductos.create({ pedido_id: numeroPedido, producto_id: dataProducto.id, cantidad:cantidad});
     console.log(dataPedidoProducto);
 

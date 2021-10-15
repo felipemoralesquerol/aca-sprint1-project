@@ -23,8 +23,9 @@ PedidosModel.init(
       comments:
         "Pendiente => Confirmado => En preparación => Enviado => Entregado. PEN => CON => ENP => ENV => ENT",
     },
-    montoTotal: {
-      type: DataTypes.DECIMAL,
+    monto_total: {
+      type: DataTypes.DECIMAL(16,2),
+      defaultValue: 0
     },
     anulado: {
       type: DataTypes.BOOLEAN,

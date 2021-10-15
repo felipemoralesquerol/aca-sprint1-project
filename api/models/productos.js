@@ -16,8 +16,8 @@ ProductosModel.init(
     descripcion: {
       type: DataTypes.STRING,
     },
-    precioVenta: {
-      type: DataTypes.DECIMAL,
+    precio_venta: {
+      type: DataTypes.DECIMAL(16,2),
     },
     stock: {
       type: DataTypes.INTEGER,
