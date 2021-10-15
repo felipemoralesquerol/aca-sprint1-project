@@ -12,6 +12,7 @@ PedidosModel.init(
     },
     fecha: {
       type: DataTypes.DATE,
+      defaultValue: new Date
     },
     direccion: {
       type: DataTypes.STRING,

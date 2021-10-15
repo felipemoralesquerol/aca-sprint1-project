@@ -66,6 +66,16 @@ exports.postProducto = async (req, res, next) => {
       return
     }
 
+    if (dataPedido.anulado) {
+      httpMessage.NotFound(`Pedido anulado` ,res);
+      return 
+    }
+
+    if (dataPedido.estado !== 'PEN') {
+      httpMessage.NotFound(`Pedido en estado inhabilitado para operar` ,res);
+      return 
+    }
+
     const dataProducto = await productos.findOne({ where: {codigo:codeProducto} });
     console.log(dataProducto);
     if (!dataProducto) {
