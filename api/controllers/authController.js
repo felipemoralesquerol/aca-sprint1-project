@@ -1,8 +1,20 @@
 const jwt = require("jsonwebtoken");
+const Op = require('sequelize').Op;
 const httpMessage = require("../helpers/httpMessage");
 const passwordManager = require("../helpers/passwordManager");
 
 const UsuariosModel = require("../models/usuarios");
+
+function getPayload(usuario) {
+  return {
+    email: usuario.email,
+    username: usuario.username,
+    admin: usuario.admin,
+    usernameID : usuario.id
+  };
+}
+
+
 
 // Login
 exports.signin = async function signin(req, res, next) {
@@ -27,12 +39,7 @@ exports.signin = async function signin(req, res, next) {
     }
 
     // Armado de payload
-    let payload = {
-      email: usuario.email,
-      username: usuario.username,
-      admin: usuario.admin,
-      usernameID : usuario.id
-    };
+    let payload = getPayload(usuario);
 
     const compare = passwordManager.comparePassword(password, usuario.password);
     if (compare) {
@@ -61,26 +68,25 @@ exports.signin = async function signin(req, res, next) {
 exports.signup = async function signup(req, res, next) {
   try {
     // TODO: Sanetizar y validar la entrada
-    const { username, password, email } = req.body;
-    console.log("signup", username, password, email);
+    const { username, password, email, nombre, direccion_envio, telefono } = req.body;
+    console.log("signup", req.body);
 
-    let usuario = await UsuariosModel.findOne({ where: { email: email } });
-
+    let usuario = await UsuariosModel.findOne({ where: { 
+      [Op.or]: [{email: email}, {username: username}]
+    }});
     if (usuario) {
-      DuplicateData.DuplicateData("Email ya registrado!", res);
+      httpMessage.DuplicateData("Email y/o Username ya registrado!", res);
       return;
-    }
+    };
 
+    // Validar dureza de password
+       
     req.body.password = passwordManager.encrypt(req.body.password);
 
-    usuario = await UsuariosModel.create(string(req.body));
+    usuario = await UsuariosModel.create(req.body);
 
     // Armado de payload
-    let payload = {
-      email: usuario.email,
-      username: usuario.username,
-      admin: usuario.admin,
-    };
+    let payload = getPayload(usuario);
 
     jwt.sign(
       payload,

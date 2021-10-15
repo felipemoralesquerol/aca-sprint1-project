@@ -51,15 +51,13 @@ exports.post = async (req, res, next) => {
 };
 
 
-
 exports.postProducto = async (req, res, next) => {
   try {
-   
     const numeroPedido = req.params.id;
     const codeProducto = req.params.codeProducto
     const cantidad = req.body.cantidad;
 
-    const dataPedido = await pedidos.findOne({ where :{ id:numeroPedido} });
+    const dataPedido = await pedidos.findOne({ where :{ id:numeroPedido, usuario_id : req.authData.usernameID} });
     console.log(dataPedido);
     if (!dataPedido) {
       httpMessage.NotFound(`Pedido no encontrado` ,res);
@@ -86,7 +84,6 @@ exports.postProducto = async (req, res, next) => {
     // Actualización de cabecera de pedidos
     dataPedido.monto_total = parseFloat(dataPedido.monto_total) + parseFloat(dataProducto.precio_venta) * parseInt(cantidad);
     dataPedido.save();
-
 
     const dataPedidoProducto = await pedidosProductos.create({ pedido_id: numeroPedido, producto_id: dataProducto.id, cantidad:cantidad});
     console.log(dataPedidoProducto);
