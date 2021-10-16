@@ -3,6 +3,7 @@ const UsuariosModel = require("../usuarios");
 const ProductosModel = require("../productos");
 const FormasDePagoModel = require("../formaDePago");
 const PedidosProductosModel = require("../pedidosProductos");
+const DireccionesModel = require("../direcciones");
 
 console.log('Ejecución de asociaciones!')
 // Agregado de relaciones
@@ -11,6 +12,12 @@ console.log('Ejecución de asociaciones!')
 // El pedido pertenece a un usuario
 PedidosModel.belongsTo(UsuariosModel);
 UsuariosModel.hasMany(PedidosModel);
+
+DireccionesModel.belongsTo(UsuariosModel);
+UsuariosModel.hasOne(DireccionesModel);
+
+PedidosModel.belongsTo(DireccionesModel);
+DireccionesModel.hasMany(PedidosModel);
 
 // Asociación entre pedidos y formas de pago
 PedidosModel.belongsTo(FormasDePagoModel);
@@ -23,6 +30,7 @@ PedidosModel.hasMany(PedidosProductosModel);
 // Asociacion entre productos y pedidos_productos
 PedidosProductosModel.belongsTo(ProductosModel);
 ProductosModel.hasMany(PedidosProductosModel);
+
 
 
 
