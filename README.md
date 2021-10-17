@@ -10,6 +10,13 @@ Adaptaciones para soporte de Sprint Project N. 2
 - git
 - Node.Js
 
+#### Entidades gestionadas:
+
+- Usuarios
+- Pedidos
+- Formas de Pago
+- Productos
+
 #### Módulos de Node.Js utilizados:
 
 - "bcrypt": "^5.0.1",
