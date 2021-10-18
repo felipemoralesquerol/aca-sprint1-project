@@ -16,6 +16,7 @@ Adaptaciones para soporte de Sprint Project N. 2
 - Pedidos
 - Formas de Pago
 - Productos
+- Direcciones
 
 #### Módulos de Node.Js utilizados:
 
