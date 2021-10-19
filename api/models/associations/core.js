@@ -31,9 +31,6 @@ PedidosModel.hasMany(PedidosProductosModel);
 PedidosProductosModel.belongsTo(ProductosModel);
 ProductosModel.hasMany(PedidosProductosModel);
 
-
-
-
 //  Creación de nueva entidad de vinculo (para el caso en el que la tabla no tiene atributos)
 // PedidosModel.belongsToMany(ProductosModel, {
 //   through: "pedidos_productos",
@@ -50,8 +47,6 @@ ProductosModel.hasMany(PedidosProductosModel);
 // } catch (error) {
 //   console.log(error)
 // }
-
-
 
 
 console.log('Fin de asociaciones!' )
