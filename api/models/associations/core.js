@@ -17,6 +17,7 @@ DireccionesModel.belongsTo(UsuariosModel);
 UsuariosModel.hasOne(DireccionesModel);
 
 PedidosModel.belongsTo(DireccionesModel);
+
 DireccionesModel.hasMany(PedidosModel);
 
 // Asociación entre pedidos y formas de pago
