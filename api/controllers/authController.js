@@ -5,6 +5,7 @@ const passwordManager = require("../helpers/passwordManager");
 
 const UsuariosModel = require("../models/usuarios");
 
+// TODO: Investigar si corresponde agregar mas campos
 function getPayload(usuario) {
   return {
     email: usuario.email,

@@ -2,7 +2,7 @@ module.exports = {
   Message(message, res) {
     // TODO: Enviar email
     // TODO: Enlazar error con tracking tool
-    // TODO:
+
     console.log("Mensaje interno: " + message);
     res.status(200).send({ status: message });
   },
@@ -10,7 +10,6 @@ module.exports = {
   Error(req, res, err) {
     // TODO: Enviar email
     // TODO: Enlazar error con tracking tool
-    // TODO:
 
     if (err.message.includes("Validation error")) {
       auxError = "Error interno: " + err.message;
