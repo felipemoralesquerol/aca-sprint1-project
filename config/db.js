@@ -12,7 +12,6 @@ const sequelize = new Sequelize(
         console.log(str);
     }
   },
-  
 );
 
 async function authenticate() {
@@ -32,5 +31,4 @@ async function authenticate() {
 
 authenticate();
 
-//const associations = require("./../api/models/associations/core");
 module.exports = sequelize;

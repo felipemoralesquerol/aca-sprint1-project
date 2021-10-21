@@ -18,7 +18,7 @@ const swaggerOptions = {
     openapi: "3.0.3",
     info: {
       title: "API Resto",
-      version: "1.0.0",
+      version: "1.1.0",
       description: "Sprint Project N. 2",
     },
     components: {
