@@ -1,7 +1,7 @@
 {
-  "name": "aca-sprint1-meeting14",
-  "version": "1.0.0",
-  "description": "",
+  "name": "aca-sprint1-project1",
+  "version": "2.0.0",
+  "description": "Sprint Project",
   "main": "index.js",
   "scripts": {
     "kill-port": "npx kill-port 5000",
