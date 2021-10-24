@@ -47,6 +47,7 @@ Adaptaciones para soporte de Sprint Project N. 2
 4. Ejecutar `npm install`.
 5. Copiar el archivo .env.example a .env
 6. Configurar las variables de entorno del archivo .env a su configuración
+7. (opcional) Ejecutar script sql ubicado en carpeta sql que contiene las 
 7. Chequear las dependencias utilizadas vía `npm-check`
 8. Arrancar el servidor ejecutando `npm run dev`
 9. Ejecución de test ejecutando `npm run test`
