@@ -9,6 +9,8 @@ Adaptaciones para soporte de Sprint Project N. 2
 
 - git
 - Node.Js
+- MySQL Server Database
+- Redis Server
 
 #### Entidades gestionadas:
 
@@ -51,6 +53,7 @@ Adaptaciones para soporte de Sprint Project N. 2
 8. Chequear las dependencias utilizadas vía `npm-check`
 9. Arrancar el servidor ejecutando `npm run dev`
 10. Ejecución de test ejecutando `npm run test`
+11. A disfrutar!!
 
 #### Documentación de la aplicación con SWAGGER:
 
