@@ -7,10 +7,10 @@ Adaptaciones para soporte de Sprint Project N. 2
 
 #### Prerrequisitos tecnológicos:
 
-- git
-- Node.Js
-- MySQL Server Database
-- Redis Server
+- git (control de código fuente)
+- Node.Js (server backend)
+- MySQL Server Database (database)
+- Redis Server (cache)
 
 #### Entidades gestionadas:
 
@@ -62,4 +62,5 @@ Adaptaciones para soporte de Sprint Project N. 2
 ---
 
 _Nota del autor:
-Esta implementación fue desarrollada a titulo personal y solamente a los efectos de contar con una alternativa de la posible implementación de lo requerido. Cualquier comentario será bienvenido!_
+Esta implementación fue desarrollada a titulo personal y solamente a los efectos de contar con una alternativa de la posible implementación de lo requerido.
+Cualquier comentario será bienvenido!_
