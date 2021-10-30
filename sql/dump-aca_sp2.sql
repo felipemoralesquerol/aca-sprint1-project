@@ -1,3 +1,4 @@
+-- Ejecutar desde cualquier cliente MySQL Compatible
 -- MariaDB dump 10.19  Distrib 10.5.12-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: aca_sp2
