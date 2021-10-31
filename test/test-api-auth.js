@@ -88,5 +88,5 @@ describe("Probando API Auth", () => {
     assert.notExists(token, "Se espera un token en la respuesta");
   });
 
-  //TODO: Falta test usando signup
+
 });
