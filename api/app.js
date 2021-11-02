@@ -17,8 +17,8 @@ const swaggerOptions = {
     //servers: ["http://localhost:5000/"],
     openapi: "3.0.3",
     info: {
-      title: "API Resto",
-      version: "1.1.0",
+      title: "API Resto 2",
+      version: "2.1.0",
       description: "Sprint Project N. 2",
     },
     components: {
