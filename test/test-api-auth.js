@@ -1,7 +1,7 @@
 require("dotenv").config();
 const assert = require("chai").assert;
 const fetch = require("node-fetch");
-const urlAPI = "http://localhost:" + process.env.APP_PORT + "/api";
+const urlAPI = process.env.APP_URL + ":" + process.env.APP_PORT + "/api";
 
 describe("Probando API Auth", () => {
   it("1.API responde 403 (sin token)", async () => {
