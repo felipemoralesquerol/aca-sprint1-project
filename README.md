@@ -7,6 +7,7 @@ Adaptaciones para soporte de Sprint Project N. 2
 
 #### Prerrequisitos tecnológicos:
 
+
 - git (control de código fuente)
 - Node.Js (server backend)
 - MySQL Server Database (database)
@@ -42,7 +43,7 @@ Adaptaciones para soporte de Sprint Project N. 2
 
 #### Instrucciones de instalación:
 
-1. Crear carpeta para su instalación
+1. Crear carpeta para su instalación.
 2. Ingresar a la carpeta creada y desde la consola ejecutar:
    `git clone https://github.com/felipemoralesquerol/aca-sprint1-project`
 3. Ingresar a la carpeta aca-sprint1-project.
@@ -54,6 +55,7 @@ Adaptaciones para soporte de Sprint Project N. 2
 9. Arrancar el servidor ejecutando `npm run dev`
 10. Ejecución de test ejecutando `npm run test`
 11. A disfrutar!!
+
 
 #### Documentación de la aplicación con SWAGGER:
 
