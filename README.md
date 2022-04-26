@@ -1,17 +1,17 @@
 ## Curso de Desarrollo Web Backend Acámica. Revisión 3
 
-#### Descripción
+#### Descripción del proyecto
 
 Sprint Project N. 1 en el marco del Curso de Desarrollo Web Backend de Acámica 2021 (Jun/Oct)!
 Adaptaciones para soporte de Sprint Project N. 2
 
 #### Prerrequisitos tecnológicos:
 
-
 - git (control de código fuente)
 - Node.Js (server backend)
 - MySQL Server Database (database)
 - Redis Server (cache)
+
 
 #### Entidades gestionadas:
 
@@ -20,6 +20,7 @@ Adaptaciones para soporte de Sprint Project N. 2
 - Formas de Pago
 - Productos
 - Direcciones (usuarios)
+
 
 #### Módulos de Node.Js utilizados:
 
@@ -40,6 +41,7 @@ Adaptaciones para soporte de Sprint Project N. 2
 - "sequelize": "^6.6.5",
 - "swagger-jsdoc": "^6.1.0",
 - "swagger-ui-express": "^4.1.6"
+
 
 #### Instrucciones de instalación:
 
