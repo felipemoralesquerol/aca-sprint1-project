@@ -10,7 +10,7 @@ Adaptaciones para soporte de Sprint Project N. 2
 - git (control de código fuente)
 - Node.Js (server backend)
 - MySQL Server Database (database)
-- Redis Server (cache)
+- Redis Server (cache server)
 
 
 #### Entidades gestionadas:
